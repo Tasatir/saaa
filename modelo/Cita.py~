@@ -1,0 +1,7 @@
+#Horarios de los Grupos
+class Cita(db.Model):
+    usuario = db.ReferenceProperty(Usuario,collection_name='citas')
+    horario = db.ReferenceProperty(Horario,collection_name='pacientes')
+    descripcion = db.StringProperty(required = True)
+    dia = db.StringProperty(required = True, choices=('Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'))
+    hora = db.TimeProperty(required = True)

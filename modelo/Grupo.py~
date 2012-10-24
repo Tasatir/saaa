@@ -1,0 +1,6 @@
+from google.appengine.ext import db
+import Clinica
+#Grupos en los que se Dividen las clinicas
+class Grupo(db.Model):
+    clinica = db.ReferenceProperty(Clinica,collection_name='grupos')
+    descripcion = db.StringProperty(required = True)

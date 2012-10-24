@@ -1,0 +1,7 @@
+from google.appengine.ext import db
+#Ciclos escolares
+class Ciclo(db.Model):
+    validFrom = db.DateProperty(required = True)
+    validTo = db.DateProperty(required = True)
+    descripcion = db.StringProperty(required = True)
+    isActual = db.BooleanProperty(required = True,default = 0)

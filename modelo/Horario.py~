@@ -1,0 +1,7 @@
+from google.appengine.ext import db
+#Horarios de los Grupos
+class Horario(db.Model):
+    grupo = db.ReferenceProperty(Clinica,collection_name='horarios')
+    descripcion = db.StringProperty(required = True)
+    dia = db.StringProperty(required = True, choices=('Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'))
+    hora = db.TimeProperty(required = True)
