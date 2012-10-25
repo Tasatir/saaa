@@ -10,7 +10,7 @@ libraries:
 
 handlers:
 - url: /stylesheets
-  static_dir: includes
+  static_dir: stylesheets
 
 - url: /includes
   static_dir: includes

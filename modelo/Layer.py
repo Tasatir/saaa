@@ -1,4 +1,4 @@
-import Model
+import Modelo
 
 """
 Clase para manipulacion de Datos

@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+  </head>
+  <body> 
+      <table border="1" > 
+         <tr>
+				<th width="300">tipo</th>
+				<th>nombre</th>
+				<th>user</th>
+				<th>password</th>
+				<td>.</td>
+				<td>.</td>
+         </tr>
+      {% for u in usuarios %}  
+		<tr>
+			<td>{{ u.tipo }}</td>
+			<td>{{ u.nombre }}</td>
+			<td>{{ u.user }}</td>
+			<td>{{ u.password }}</td>
+			<td><a href=/editaUsuario?key={{u.key()}}>Edita</a></td>
+			<td><a href=/eliminaUsuario?key={{u.key()}}>Eliminar</a></td>
+		</tr>
+      {% endfor %}
+      </table>
+  </body>
+</html>

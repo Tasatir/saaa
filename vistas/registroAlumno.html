@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+  </head>
+
+	<body>
+		<div class="content">
+			<form class="login" action="/grabaAlumno" method="post">
+				<h1>Registro para alumnos</h1> 
+				<p>Matrícula:</p>
+				<input type="text" name="user" />
+				<p>Contraseña:</p>
+				<input type="password" name="password"/>
+				<select name="clinica">
+				{% for c in clinicas %}
+					<option value="{{c.key()}}">{{c.nombre}}</option>
+				{% endfor %}
+				</select>
+				<br />
+				<input type="submit" value="Iniciar sesión" />
+			</form>
+		</div>
+	</body>
+</html>
