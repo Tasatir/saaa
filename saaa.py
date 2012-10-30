@@ -17,7 +17,8 @@ import datetime
 import urllib
 # for hashing
 import hashlib
-import modelo.Layer
+#Layer de comunicacion con Modelo
+from modelo.Layer import *
 #Framework de Web para Python
 import webapp2
                                   
@@ -61,8 +62,7 @@ class MainPage(webapp2.RequestHandler):
 class VerUsuarios(webapp2.RequestHandler):
 	""" Despliega los usuarios registrados
 	"""
-	
-	@before_filter
+#	@before_filter
 	def get(self):
 		
 		self.response.headers['Content-Type'] = 'text/html'
@@ -79,7 +79,7 @@ class VerUsuarios(webapp2.RequestHandler):
 		h.update(password)
 		md5 = h.hexdigest()
 		password = md5
-		#Usuario(nombre = nombre, user = user, password = password, tipo = tipo).put()
+		Usuario(nombre = nombre, user = user, password = password, tipo = tipo).put()
 		
 		usuarios = db.GqlQuery("SELECT * FROM Usuario")
 		
@@ -150,22 +150,41 @@ class AgregarClinica(webapp2.RequestHandler):
 		self.response.headers['Content-Type'] = 'text/html'
 		_despliegaAgregarClinica(self, '/vistas/agregarClinica.html')
 
+class AgregaHorarioClinica(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		clinicas = getAllClinicas()
+		_despliegaAgregaHorarioClinica(self,clinicas, '/vistas/agregarHorarioClinica.html')
+
+
+class AgregarHorario(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		_despliegaAgregarHorario(self, '/vistas/agregarHorario.html')
+
+class MostrarHorariosClinica(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		clinica = self.request.get('key')
+		horarios = verHorarios(clinica)
+		_despliegaMostrarHorariosClinica(self,horarios, '/vistas/mostrarHorariosClinica.html')
+
 class GrabaClinica(webapp2.RequestHandler):
 	def post(self):
 		nombre = self.request.get('nombre')
-		
-		Clinica(nombre = nombre).put()
+		grabaClinica(nombre)
 		self.redirect('/verClinicas') #redirección a listar pacientes
-		
 
-class VerClinicas(webapp2.RequestHandler):
-	
-	@before_filter
+class registraCita(webapp2.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
-		
-		clinicas = db.GqlQuery("SELECT * FROM Clinica")
-		
+		_despliegaRegistraCita(self, '/vistas/registraCita.html')	
+
+class VerClinicas(webapp2.RequestHandler):
+	#@before_filter
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		clinicas = getAllClinicas()
 		_despliegaVerClinicas(self, clinicas, '/vistas/verClinicas.html')
 		
 
@@ -174,6 +193,10 @@ Views
 """
 
 def _despliegaLogin(self, templateFile):
+        template = jinja_environment.get_template(templateFile)
+        self.response.out.write(template.render({}))
+
+def _despliegaRegistraCita(self, templateFile):
         template = jinja_environment.get_template(templateFile)
         self.response.out.write(template.render({}))
 
@@ -189,7 +212,19 @@ def _despliegaRegistroAlumno(self, clinicas, templateFile):
 		template = jinja_environment.get_template(templateFile)
 		self.response.out.write(template.render({'clinicas': clinicas }))
 
+def _despliegaAgregaHorarioClinica(self, clinicas, templateFile):
+		template = jinja_environment.get_template(templateFile)
+		self.response.out.write(template.render({'clinicas': clinicas }))
+
+def _despliegaMostrarHorariosClinica(self, horarios, templateFile):
+		template = jinja_environment.get_template(templateFile)
+		self.response.out.write(template.render({'horarios': horarios }))
+
 def _despliegaAgregarClinica(self, templateFile):
+		template = jinja_environment.get_template(templateFile)
+		self.response.out.write(template.render({}))
+
+def _despliegaAgregarHorario(self, templateFile):
 		template = jinja_environment.get_template(templateFile)
 		self.response.out.write(template.render({}))
 
@@ -206,4 +241,8 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/grabaAlumno', GrabaAlumno),
                                ('/verClinicas', VerClinicas),
                                ('/agregarClinica', AgregarClinica),
+                               ('/agregaHorarioClinica', AgregaHorarioClinica),
+                               ('/agregarHorario', AgregarHorario),
+                               ('/mostrarHorariosClinica', MostrarHorariosClinica),
+                               ('/registraCita', registraCita),
                                ('/grabaClinica', GrabaClinica)], debug=True)

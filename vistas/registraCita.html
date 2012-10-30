@@ -1,0 +1,13 @@
+<html>
+    <body>
+        <form name="myform" action="/grabaProducto" method="post">
+            <table>
+                <tr><td></td><td></td></tr>
+                <tr><td>Codigo</td><td><input type="text" id="forma-codigo" name="codigo" maxlength="10"></input></td></tr>
+                <tr><td>Descripcion</td><td><textarea name="descripcion" id="forma-descripcion"></textarea></td></tr>
+                <tr><td>Inventario</td><td><input type="text" id="forma-entero" name="inventario"></input></td></tr>
+                <tr><td></td><td><input type="button" onclick="validateForm()" value="Guardar"/></td></tr>
+            </table>       
+        </form>
+    </body>
+</html>

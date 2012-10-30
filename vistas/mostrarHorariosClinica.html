@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+  </head>
+  <body> 
+      <table border="1" > 
+         <tr>
+				<th width="300">nombre</th>
+				<td>.</td>
+         </tr>
+      {% for h in horarios %}  
+		<tr>
+			<td>{{h.nombre}}</td>
+			<td><a href=mostrarHorariosClinica/?key={{h.key()}}>Ver Horarios</a></td>
+		</tr>
+      {% endfor %}
+      </table>
+  </body>
+</html>
