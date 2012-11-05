@@ -19,7 +19,6 @@ class Usuario(db.Model):
     #ID del usuario que es dueno de esta entidad
     #En este caso es la matricula
     matricula = db.StringProperty(required = True)
-    # Informacion basica
     nombre = db.StringProperty(required = True)
     apellidop = db.StringProperty(required = True)
     apellidom = db.StringProperty(required = True)
@@ -43,7 +42,7 @@ class Horario(db.Model):
     grupo = db.ReferenceProperty(Clinica,collection_name='horarios')
     descripcion = db.StringProperty(required = True)
     dia = db.StringProperty(required = True, choices=('Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'))
-    hora = db.TimeProperty(required = True)
+    horaInicio = db.TimeProperty(required = True)
 
 #Relacion de Usuarios con Clinicas
 class Usuario_Clinica(db.Model):

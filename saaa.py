@@ -160,20 +160,31 @@ class AgregaHorarioClinica(webapp2.RequestHandler):
 class AgregarHorario(webapp2.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
-		_despliegaAgregarHorario(self, '/vistas/agregarHorario.html')
+		clinica = self.request.get('clinica')
+		_despliegaAgregarHorario(self,clinica, '/vistas/agregarHorario.html')
 
 class MostrarHorariosClinica(webapp2.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
 		clinica = self.request.get('key')
 		horarios = verHorarios(clinica)
-		_despliegaMostrarHorariosClinica(self,horarios, '/vistas/mostrarHorariosClinica.html')
+		_despliegaMostrarHorariosClinica(self,horarios,clinica, '/vistas/mostrarHorariosClinica.html')
 
 class GrabaClinica(webapp2.RequestHandler):
 	def post(self):
 		nombre = self.request.get('nombre')
 		grabaClinica(nombre)
 		self.redirect('/verClinicas') #redirección a listar pacientes
+
+class GrabaHorario(webapp2.RequestHandler):
+	def post(self):
+		clinica = self.request.get('clinica')
+		horaInicio = self.request.get('horaInicio')
+		horaFin = self.request.get('horaFin')
+		dia = self.request.get('dia')
+		descripcion = self.request.get('descripcion')
+		setHorario(clinica,horaInicio,horaFin,dia,descripcion)
+		self.redirect('/mostrarHorariosClinica?key='+clinica) #redirección ver horarios de clinica
 
 class registraCita(webapp2.RequestHandler):
 	def get(self):
@@ -216,17 +227,17 @@ def _despliegaAgregaHorarioClinica(self, clinicas, templateFile):
 		template = jinja_environment.get_template(templateFile)
 		self.response.out.write(template.render({'clinicas': clinicas }))
 
-def _despliegaMostrarHorariosClinica(self, horarios, templateFile):
+def _despliegaMostrarHorariosClinica(self, horarios,clinica, templateFile):
 		template = jinja_environment.get_template(templateFile)
-		self.response.out.write(template.render({'horarios': horarios }))
+		self.response.out.write(template.render({'horarios': horarios,'clinica':clinica }))
 
 def _despliegaAgregarClinica(self, templateFile):
 		template = jinja_environment.get_template(templateFile)
 		self.response.out.write(template.render({}))
 
-def _despliegaAgregarHorario(self, templateFile):
+def _despliegaAgregarHorario(self,clinica, templateFile):
 		template = jinja_environment.get_template(templateFile)
-		self.response.out.write(template.render({}))
+		self.response.out.write(template.render({'clinica':clinica}))
 
 def _despliegaVerClinicas(self, clinicas, templateFile):
 		template = jinja_environment.get_template(templateFile)
@@ -243,6 +254,8 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/agregarClinica', AgregarClinica),
                                ('/agregaHorarioClinica', AgregaHorarioClinica),
                                ('/agregarHorario', AgregarHorario),
+                               ('/grabaHorario', GrabaHorario),
                                ('/mostrarHorariosClinica', MostrarHorariosClinica),
+                               ('/grabaClinica', GrabaClinica),
                                ('/registraCita', registraCita),
                                ('/grabaClinica', GrabaClinica)], debug=True)

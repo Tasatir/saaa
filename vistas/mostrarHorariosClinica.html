@@ -11,9 +11,10 @@
       {% for h in horarios %}  
 		<tr>
 			<td>{{h.nombre}}</td>
-			<td><a href=mostrarHorariosClinica/?key={{h.key()}}>Ver Horarios</a></td>
+			<td><a href=mostrarHorariosClinica?key={{h.key()}}>Ver Horarios</a></td>
 		</tr>
       {% endfor %}
       </table>
+	<a href="agregarHorario?clinica={{clinica}}">Agregar Nuevo Horario</a>
   </body>
 </html>
