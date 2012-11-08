@@ -1,0 +1,16 @@
+<div id="menu">
+	<ul>	
+		{%- if session -%}
+			{%- if session[2] == 'admin': -%}
+			<li><button class="btn"><a href="/agregarClinica">Agregar clínica</a></button></li>
+			<li><button class="btn"><a href="/verClinicas">Ver clínicas</a></button></li>
+			<li><button class="btn"><a href="/verUsuarios">Ver usuarios</a></button></li>
+			<li><button class="btn"><a href="/agregarHorario">Agregar horario</a></button></li>
+			<li><button class="btn"><a href="/agregaHorarioClinica">Agregar horario clinica</a></button></li>
+			<li><button class="btn"><a href="/mostrarHorariosClinica">Mostrar horarios clinica</a></button></li>
+			<li><button class="btn"><a href="/registraCita">Registra cita</a></button></li>
+			<li><button class="btn"><a href="/registroAlumno">Registro alumnos</a></button></li>
+			{% endif %}
+		{% endif %}
+	</ul>
+</div>

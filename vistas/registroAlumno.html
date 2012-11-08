@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    {% include '/vistas/head.html' %}
   </head>
 
 	<body>
+		{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
 		<div class="content">
 			<form class="login" action="/grabaAlumno" method="post">
 				<h1>Registro para alumnos</h1> 
@@ -18,7 +20,7 @@
 				{% endfor %}
 				</select>
 				<br />
-				<input type="submit" value="Iniciar sesión" />
+				<input type="submit" value="Registrar" />
 			</form>
 		</div>
 	</body>
