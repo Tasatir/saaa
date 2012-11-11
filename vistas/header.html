@@ -1,0 +1,13 @@
+<div id="header">
+	{%- if session -%}
+	<div class="btn-group">
+		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+		{{ session[0] }}
+			<span class="caret"></span>
+		</a>
+		<ul class="dropdown-menu">
+			<li><a href="/cerrarSesion">Cerrar sesión</a></li>
+		</ul>
+	</div>
+	{%- endif -%}
+</div>

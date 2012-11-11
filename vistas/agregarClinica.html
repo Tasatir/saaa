@@ -1,8 +1,13 @@
 <html>
-  <body>
-    <form action="/grabaClinica" method="post">
-       <div>Nombre: <input type="text" name="nombre" /></div>
-       <div><input type="submit" value="Guardar clínica"></div>
-    </form>
-  </body>
+	<head>
+		{% include '/vistas/head.html' %}
+	</head>
+	<body>
+		{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+		<form action="/grabaClinica" method="post">
+		   <div>Nombre: <input type="text" name="nombre" /></div>
+		   <div><input type="submit" value="Guardar clínica"></div>
+		</form>
+	</body>
 </html>

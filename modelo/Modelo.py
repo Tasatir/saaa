@@ -19,6 +19,8 @@ class Usuario(db.Model):
     #ID del usuario que es dueno de esta entidad
     #En este caso es la matricula
     matricula = db.StringProperty(required = True)
+    password = db.StringProperty(required = True)
+    # Informacion basica
     nombre = db.StringProperty(required = True)
     apellidop = db.StringProperty(required = True)
     apellidom = db.StringProperty(required = True)

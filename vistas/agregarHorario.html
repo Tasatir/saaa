@@ -1,5 +1,10 @@
 <html>
+	<head>
+		{% include '/vistas/head.html' %}
+	</head>
   <body>
+		{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
     <form action="/grabaHorario" method="post">
        <div>Descripcion: <input type="text" name="descripcion" /></div>
 	   <div>Hora Inicio:<input type="text" name="horaInicio" id="time1"  value="12:00"/></div>

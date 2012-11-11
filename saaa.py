@@ -9,7 +9,7 @@ versión: 1
 
 #Manejo de temlates en el HTML
 import jinja2                    
-from jinja2 import Environment, meta
+from jinja2 import Environment, PackageLoader
 
 import os
 import cgi
@@ -27,11 +27,8 @@ from google.appengine.ext import db
 
 # intitalization of template system. It says that HTML templates will
 # be found in current directory ("__file__")
-jinja_environment = jinja2.Environment( \
-   loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
-
 # variable env para sesiones
-env = Environment()
+env = Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 # Método para verificar si hay una sesión activa
 def before_filter(fn):
@@ -53,6 +50,21 @@ class MainPage(webapp2.RequestHandler):
 
         self.response.headers['Content-Type'] = 'text/html'
         
+        # Generar el admin
+        matricula = 'admin'
+        password = 'admin'
+        nombre = 'admin'
+        apellidop = 'admin'
+        apellidom = 'admin'
+        tipo = 'admin'
+        # Generar password
+        h =  hashlib.new('ripemd160')
+        h.update(password)
+        md5 = h.hexdigest()
+        password = md5
+
+        #Usuario(matricula = matricula, password = password, nombre = nombre, apellidop = apellidop, apellidom = apellidom, tipo = tipo).put()
+        
         #productos = db.GqlQuery("SELECT * FROM Inventario")
         
         #Desplegar lista de productos
@@ -62,25 +74,12 @@ class MainPage(webapp2.RequestHandler):
 class VerUsuarios(webapp2.RequestHandler):
 	""" Despliega los usuarios registrados
 	"""
-#	@before_filter
+	
+	#@before_filter
 	def get(self):
 		
 		self.response.headers['Content-Type'] = 'text/html'
-		
-		#self.response.out.write( env.globals['session'])
-		
-		# Generar el admin
-		nombre = 'admin'
-		user = 'admin'
-		password = 'admin'
-		tipo = 'admin'
-		# Generar password
-		h =  hashlib.new('ripemd160')
-		h.update(password)
-		md5 = h.hexdigest()
-		password = md5
-		Usuario(nombre = nombre, user = user, password = password, tipo = tipo).put()
-		
+				
 		usuarios = db.GqlQuery("SELECT * FROM Usuario")
 		
 		_despliegaVerUsuarios(self, usuarios, '/vistas/verUsuarios.html')
@@ -118,7 +117,7 @@ class IniciaSesion(webapp2.RequestHandler):
 	
 	def post(self):		
 		self.response.headers['Content-Type'] = 'text/html'
-		user = self.request.get('user')
+		matricula = self.request.get('matricula')
 		password = self.request.get('password')
 		
 		h =  hashlib.new('ripemd160')
@@ -126,23 +125,36 @@ class IniciaSesion(webapp2.RequestHandler):
 		md5 = h.hexdigest()
 		password = md5
 		
-		user = db.GqlQuery("SELECT * FROM Usuario WHERE user = '" + user + "' AND password = '" + password + "'")
+		user = db.GqlQuery("SELECT * FROM Usuario WHERE matricula = '" + matricula + "' AND password = '" + password + "'")
 		
 		if user.count() == 1:
 			for u in user:
-				#self.response.out.write( u.user + ' ' + u.password)
 				user = []
-				user.append(u.user)
+				user.append(u.nombre)
+				user.append(u.matricula)
 				user.append(u.tipo)
 				env.globals['session'] = user
 				self.redirect('/bienvenida')
 		else:
 			self.redirect('/')
 
+class CerrarSesion(webapp2.RequestHandler):
+	""" Entrada: al dar click en cerrar sesión
+		Salida: se elimina la sesión actual y se
+		redirige a la pantalla para iniciar sesión
+	"""
+	
+	def get(self):
+		del env.globals['session']
+		self.redirect('/')
+
 class Bienvenida(webapp2.RequestHandler):
+	"""	Pantalla que se muestra al iniciar sesion
+	"""
+	
+	@before_filter
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
-		
 		_despliegaBienvenida(self, '/vistas/bienvenida.html')
 
 class AgregarClinica(webapp2.RequestHandler):
@@ -211,43 +223,43 @@ Views
 """
 
 def _despliegaLogin(self, templateFile):
-        template = jinja_environment.get_template(templateFile)
+        template = env.get_template(templateFile)
         self.response.out.write(template.render({}))
 
 def _despliegaRegistraCita(self, templateFile):
-        template = jinja_environment.get_template(templateFile)
+        template = env.get_template(templateFile)
         self.response.out.write(template.render({}))
 
 def _despliegaVerUsuarios(self, usuarios, templateFile):
-		template = jinja_environment.get_template(templateFile)
+		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'usuarios': usuarios }))
         
 def _despliegaBienvenida(self, templateFile):
-		template = jinja_environment.get_template(templateFile)
+		template = env.get_template(templateFile)
 		self.response.out.write(template.render({}))
 		
 def _despliegaRegistroAlumno(self, clinicas, templateFile):
-		template = jinja_environment.get_template(templateFile)
+		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinicas': clinicas }))
 
 def _despliegaAgregaHorarioClinica(self, clinicas, templateFile):
-		template = jinja_environment.get_template(templateFile)
+		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinicas': clinicas }))
 
 def _despliegaMostrarHorariosClinica(self, horarios,clinica, templateFile):
-		template = jinja_environment.get_template(templateFile)
+		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'horarios': horarios,'clinica':clinica }))
 
 def _despliegaAgregarClinica(self, templateFile):
-		template = jinja_environment.get_template(templateFile)
+		template = env.get_template(templateFile)
 		self.response.out.write(template.render({}))
 
 def _despliegaAgregarHorario(self,clinica, templateFile):
-		template = jinja_environment.get_template(templateFile)
+		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinica':clinica}))
 
 def _despliegaVerClinicas(self, clinicas, templateFile):
-		template = jinja_environment.get_template(templateFile)
+		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinicas': clinicas }))
 
 
@@ -265,5 +277,11 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/mostrarHorariosClinica', MostrarHorariosClinica),
                                ('/grabaClinica', GrabaClinica),
                                ('/registraCita', registraCita),
+<<<<<<< HEAD
                                ('/eliminarHorario', EliminaHorario),
+=======
+                               ('/grabaClinica', GrabaClinica),
+                               ('/eliminarHorario', EliminaHorario),
+                               ('/cerrarSesion', CerrarSesion),
+>>>>>>> new_branch_name
                                ('/grabaClinica', GrabaClinica)], debug=True)

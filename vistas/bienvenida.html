@@ -1,12 +1,12 @@
 <html>
   <head>
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    {% include '/vistas/head.html' %}
   </head>
 
   <body>
-    <h1>Bienvenido</h1> 
-    <a href="/verClinicas">Ver clínicas</a>
-    {{ session['session'] }}
-    <a href="/verUsuarios"></a>
+		{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+		<h1>Bienvenido {{ session[0]}}</h1> 
+		
   </body>
 </html>
