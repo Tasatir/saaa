@@ -37,14 +37,16 @@ class Ciclo(db.Model):
 #Grupos en los que se Dividen las clinicas
 class Grupo(db.Model):
     clinica = db.ReferenceProperty(Clinica,collection_name='grupos')
+    nombre - db.StringProperty(required = True)
     descripcion = db.StringProperty(required = True)
 
 #Horarios de los Grupos
 class Horario(db.Model):
-    grupo = db.ReferenceProperty(Clinica,collection_name='horarios')
+    grupo = db.ReferenceProperty(Grupo,collection_name='horarios')
     descripcion = db.StringProperty(required = True)
     dia = db.StringProperty(required = True, choices=('Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'))
     horaInicio = db.TimeProperty(required = True)
+    horaFin = db.TimeProperty(required = True)
 
 #Relacion de Usuarios con Clinicas
 class Usuario_Clinica(db.Model):
@@ -60,5 +62,6 @@ class Cita(db.Model):
     usuario = db.ReferenceProperty(Usuario,collection_name='citas')
     horario = db.ReferenceProperty(Horario,collection_name='pacientes')
     descripcion = db.StringProperty(required = True)
+    folio = db.StringProperty(required = True)
     dia = db.StringProperty(required = True, choices=('Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'))
     hora = db.TimeProperty(required = True)

@@ -198,6 +198,13 @@ class GrabaHorario(webapp2.RequestHandler):
 		setHorario(clinica,horaInicio,horaFin,dia,descripcion)
 		self.redirect('/mostrarHorariosClinica?key='+clinica) #redirección ver horarios de clinica
 
+class EliminaHorario(webapp2.RequestHandler):
+	def get(self):
+		horarioKey = self.request.get('key')
+        	deleteHorario(horarioKey)
+        	self.redirect('/mostrarHorariosClinica?key='+self.request.get('clinica')) #redirección ver horarios de clinica
+
+
 class registraCita(webapp2.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
@@ -271,4 +278,6 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/grabaClinica', GrabaClinica),
                                ('/registraCita', registraCita),
                                ('/grabaClinica', GrabaClinica),
-                               ('/cerrarSesion', CerrarSesion)], debug=True)
+                               ('/eliminarHorario', EliminaHorario),
+                               ('/cerrarSesion', CerrarSesion),
+                               ('/grabaClinica', GrabaClinica)], debug=True)
