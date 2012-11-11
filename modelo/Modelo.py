@@ -37,7 +37,7 @@ class Ciclo(db.Model):
 #Grupos en los que se Dividen las clinicas
 class Grupo(db.Model):
     clinica = db.ReferenceProperty(Clinica,collection_name='grupos')
-    nombre - db.StringProperty(required = True)
+    nombre = db.StringProperty(required = True)
     descripcion = db.StringProperty(required = True)
 
 #Horarios de los Grupos
