@@ -7,11 +7,13 @@
          <tr>
 				<th width="300">nombre</th>
 				<td>.</td>
+				<td>.</td>
          </tr>
       {% for h in horarios %}  
 		<tr>
-			<td>{{h.nombre}}</td>
-			<td><a href=mostrarHorariosClinica?key={{h.key()}}>Ver Horarios</a></td>
+			<td>{{h.descripcion}}</td>
+			<td>{{h.dia}}({{h.horaInicio}}-{{h.horaFin}})</td>
+			<td><a href="eliminarHorario?key={{h.key()}}&clinica={{h.grupo.key()}}">Eliminar</a></td>
 		</tr>
       {% endfor %}
       </table>

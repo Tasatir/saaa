@@ -14,15 +14,17 @@ def grabaClinica(nombre):
 def getAllClinicas():
     return db.GqlQuery("SELECT * FROM Clinica")
 
-def verHorarios(clinica):
+def verGrupos(clinica):
     #Regresa la clinica
     clinica = db.get(clinica)
-    return clinica.horarios
+    return clinica.grupos
     
-def setHorario(clinica,horaInicio,horaFin,dia,descripcion):
+def setHorario(grupo,horaInicio,horaFin,dia,descripcion):
     format="%H:%M"
     #h1=datetime.datetime.strptime(horaInicio+":00","%H:%M:%S")
     h2=time.strptime(horaInicio, format)
-    Horario(grupo=db.get(clinica),descripcion=descripcion,dia=dia,horaInicio=datetime.time(10,10,10,0)).put()
-	
+    Horario(grupo=db.get(clinica),descripcion=descripcion,dia=dia,horaInicio=datetime.time(10,10,10,0),horaFin=datetime.time(10,10,10,0)).put()
 
+def deleteHorario(horario):
+    horario = db.get(horario)
+    db.delete(horario)
