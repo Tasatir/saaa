@@ -277,11 +277,8 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/mostrarHorariosClinica', MostrarHorariosClinica),
                                ('/grabaClinica', GrabaClinica),
                                ('/registraCita', registraCita),
-<<<<<<< HEAD
                                ('/eliminarHorario', EliminaHorario),
-=======
                                ('/grabaClinica', GrabaClinica),
                                ('/eliminarHorario', EliminaHorario),
                                ('/cerrarSesion', CerrarSesion),
->>>>>>> new_branch_name
                                ('/grabaClinica', GrabaClinica)], debug=True)
