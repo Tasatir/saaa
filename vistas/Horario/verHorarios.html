@@ -1,0 +1,31 @@
+<html>
+  <head>
+    {% include '/vistas/head.html' %}
+  </head>
+  <body> 
+	{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+	<h3>Grupo: {{grupo.nombre}}</h3>
+      <table border="1" > 
+         <tr>
+				<th width="300">Descripcion</th>
+				<td>Dia</td>
+				<td>Hora Inicio</td>
+				<td>Hora Fin</td>
+				<td>.</td>
+				<td>.</td>
+         </tr>
+      {% for h in horarios %}
+		<tr>
+			<td>{{h.descripcion}}</td>
+			<td>{{h.dia}}</td>
+			<td>{{h.horaInicio}}</td>
+			<td>{{h.horaFin}}</td>
+			<td><a href=/editarHorario?key={{h.key()}}&grupo={{grupo.key()}}>Edita</a></td>
+			<td><a href=/eliminarHorario?key={{h.key()}}&grupo={{grupo.key()}}>Eliminar</a></td>
+		</tr>
+      {% endfor %}
+      </table>
+      <p><a href="/agregarHorario?key={{grupo.key()}}">Agregar Horario</a></p>
+  </body>
+</html>

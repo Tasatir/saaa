@@ -1,0 +1,29 @@
+<html>
+  <head>
+    {% include '/vistas/head.html' %}
+  </head>
+  <body> 
+	{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+	<h3>Clínica: {{clinica.nombre}}</h3>
+      <table border="1" > 
+         <tr>
+				<th width="300">Nombre</th>
+				<td>Descripción</td>
+				<td>.</td>
+				<td>.</td>
+				<td>.</td>
+         </tr>
+      {% for g in grupos %}  
+		<tr>
+			<td>{{g.nombre}}</td>
+			<td>{{g.descripcion}}</td>
+			<td><a href=/editarGrupo?key={{g.key()}}&clinica={{clinica.key()}}>Edita</a></td>
+			<td><a href=/eliminarGrupo?key={{g.key()}}&clinica={{clinica.key()}}>Eliminar</a></td>
+			<td><a href=/verHorarios?key={{g.key()}}>Horarios</a></td>
+		</tr>
+      {% endfor %}
+      </table>
+      <p><a href="/agregarGrupo?key={{clinica.key()}}">Agregar Grupo</a></p>
+  </body>
+</html>
