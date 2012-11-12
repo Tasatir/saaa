@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	{% include '/vistas/head.html' %}
+  </head>
+
+	<body>
+		{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+		<div class="content">
+			<form class="login" action="/grabaUsuario" method="post">
+				<h1>Registro para usuarios</h1> 
+				<p>Matrícula:</p>
+				<input type="text" name="matricula" />
+				<p>Contraseña:</p>
+				<input type="password" name="password"/>
+				<label for="tipo">Tipo de usuario</label>
+				<select name="tipo">
+					<option value="Alumno">Alumno</option>
+					<option value="Doctor">Doctor</option>
+					<option value="Encargado">Encargado</option>
+					<option value="Administrador">Administrador</option>
+				</select>
+				<br></br>
+				<p>Nombre:</p>
+				<input type="text" name="nombre" />
+				<p>Apellido Paterno:</p>
+				<input type="text" name="apellidop" />
+				<p>Apellido Materno:</p>
+				<input type="text" name="apellidom" />
+				<br />
+				<input type="submit" value="Registrar usuario" />
+			</form>
+		</div>
+	</body>
+</html>

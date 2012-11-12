@@ -108,7 +108,33 @@ class GrabaAlumno(webapp2.RequestHandler):
 		md5 = h.hexdigest()
 		
 		password = md5
-            
+
+class RegistraUsuario(webapp2.RequestHandler):
+	""" Formulario para registrar usuarios
+	"""
+	
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		_despliegaRegistraUsuario(self, '/vistas/registraUsuario.html')
+
+class GrabaUsuario(webapp2.RequestHandler):
+	
+	def post(self):
+		nombre = self.request.get('nombre')
+		matricula = self.request.get('matricula')
+		password = self.request.get('password')
+		apellidop = self.request.get('apellidop')
+		apellidom = self.request.get('apellidom')
+		tipo = self.request.get('tipo')
+		
+		# Generar password
+		h =  hashlib.new('ripemd160')
+		h.update(password)
+		md5 = h.hexdigest()
+		
+		password = md5
+		
+		grabaUsuario(matricula,password,nombre,apellidop,apellidop,tipo)
 
 class IniciaSesion(webapp2.RequestHandler):
 	""" Entrada: al dar click en iniciar sesión en la pantalla principal
@@ -196,6 +222,7 @@ class EliminaClinica(webapp2.RequestHandler):
 		key = self.request.get('key')
 		eliminaClinica(key)
 		self.redirect('/verClinicas') #Redireccion a las clinicas
+<<<<<<< HEAD
 
 class VerClinicas(webapp2.RequestHandler):
 	#@before_filter
@@ -213,6 +240,25 @@ class EditaClinica(webapp2.RequestHandler):
 
 #=======================================Fin de manejos de Clinicas
 
+=======
+
+class VerClinicas(webapp2.RequestHandler):
+	#@before_filter
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		clinicas = getAllClinicas()
+		_despliegaVerClinicas(self, clinicas, '/vistas/Clinica/verClinicas.html')
+
+class EditaClinica(webapp2.RequestHandler):
+	#@before_filter
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		clinica = db.get(self.request.get('key'))
+		_despliegaEditaClinica(self, clinica, '/vistas/Clinica/editaClinica.html')
+
+#=======================================Fin de manejos de Clinicas
+
+>>>>>>> merged
 
 #=======================================Inicia Manejo de Grupos
 class AgregarGrupo(webapp2.RequestHandler):
@@ -301,12 +347,38 @@ class EditarHorario(webapp2.RequestHandler):
 
 #=======================================Fin de manejo de Horario
 
+<<<<<<< HEAD
 class registraCita(webapp2.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
 		_despliegaRegistraCita(self, '/vistas/registraCita.html')	
 
 		
+=======
+class EliminaUsuario(webapp2.RequestHandler):
+	def get(self):
+		usuarioKey = self.request.get('key')
+		deleteUsuario(usuarioKey)
+		self.redirect('/verUsuarios')
+
+class EditaUsuario(webapp2.RequestHandler):
+	def get(self):
+		usuarioKey = self.request.get('key')
+		usuario = getUsuario(usuarioKey);
+		_despliegaEditaUsuario(self, usuario, '/vistas/editaUsuario.html')
+
+class GuardaCambiosUsuario(webapp2.RequestHandler):
+	def post(self):
+		usuarioKey = self.request.get('key')
+		usuario = getUsuario(usuarioKey);
+		nombre = self.request.get('nombre')
+		matricula = self.request.get('matricula')
+		apellidop = self.request.get('apellidop')
+		apellidom = self.request.get('apellidom')
+		tipo = self.request.get('tipo')
+		actualizaUsuario(usuario,nombre,matricula,apellidop,apellidom,tipo)
+		self.redirect('/verUsuarios')
+>>>>>>> merged
 
 """
 Views
@@ -331,6 +403,10 @@ def _despliegaBienvenida(self, templateFile):
 def _despliegaRegistroAlumno(self, clinicas, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinicas': clinicas }))
+		
+def _despliegaRegistraUsuario(self, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({}))
 
 def _despliegaAgregaHorarioClinica(self, clinicas, templateFile):
 		template = env.get_template(templateFile)
@@ -344,12 +420,26 @@ def _despliegaAgregarClinica(self, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({}))
 
+<<<<<<< HEAD
 """
 Despliega la vista para agregar un grupo nuevo
 """
 def _despliegaAgregarGrupo(self,clinica, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinica':clinica}))
+=======
+<<<<<<< HEAD
+def _despliegaAgregarHorario(self,clinica, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'clinica':clinica}))
+=======
+"""
+Despliega la vista para agregar un grupo nuevo
+"""
+def _despliegaAgregarGrupo(self,clinica, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'clinica':clinica}))
+>>>>>>> merged
 
 """
 Despliega la vista para agregar un horario Nuevo
@@ -358,10 +448,18 @@ def _despliegaAgregarHorario(self,grupo, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'grupo':grupo}))
 
+<<<<<<< HEAD
+=======
+>>>>>>> Agregada Logica de Clinicas|Grupos|Horarios
+>>>>>>> merged
 
 def _despliegaVerClinicas(self, clinicas, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinicas': clinicas }))
+		
+def _despliegaEditaUsuario(self, usuario, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'usuario': usuario }))
 
 """
  Vista de Grupos de una Clinica en Especial
@@ -373,6 +471,16 @@ def _despliegaVerGrupos(self, clinica, grupos, templateFile):
 """
  Vista de Grupos de una Clinica en Especial
 """
+<<<<<<< HEAD
+def _despliegaVerGrupos(self, clinica, grupos, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'grupos': grupos,'clinica':clinica}))
+
+"""
+ Vista de Grupos de una Clinica en Especial
+"""
+=======
+>>>>>>> merged
 def _despliegaVerHorarios(self, grupo, horarios, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'grupo': grupo,'horarios':horarios}))
@@ -394,11 +502,32 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/verUsuarios', VerUsuarios),
                                ('/registroAlumno', RegistroAlumno),
                                ('/grabaAlumno', GrabaAlumno),
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+                               ('/registraUsuario', RegistraUsuario),
+                               ('/grabaUsuario', GrabaUsuario),
+                               ('/verClinicas', VerClinicas),
+                               ('/agregarClinica', AgregarClinica),
+=======
+>>>>>>> Agregada Logica de Clinicas|Grupos|Horarios
+>>>>>>> merged
                                ('/agregaHorarioClinica', AgregaHorarioClinica),
                                ('/agregarHorario', AgregarHorario),
                                ('/registraCita', registraCita),
                                 #Manejo de Clinicas
                                ('/grabaClinica', GrabaClinica),
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+                               ('/eliminarHorario', EliminaHorario),
+                               ('/cerrarSesion', CerrarSesion),
+                               ('/grabaClinica', GrabaClinica),
+                               ('/eliminaUsuario', EliminaUsuario),
+                               ('/editaUsuario', EditaUsuario),
+                               ('/guardaCambiosUsuario', GuardaCambiosUsuario)], debug=True)
+=======
+>>>>>>> merged
                                ('/editaClinica', EditaClinica),
                                ('/eliminaClinica', EliminaClinica),
                                ('/verClinicas', VerClinicas),
@@ -419,3 +548,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/editarHorario', EditarHorario),
                                 #Fin de manejo de Grupo
                                ('/cerrarSesion', CerrarSesion)], debug=True)
+<<<<<<< HEAD
+=======
+>>>>>>> Agregada Logica de Clinicas|Grupos|Horarios
+>>>>>>> merged
