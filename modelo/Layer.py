@@ -2,8 +2,7 @@ from Modelo import *
 from google.appengine.ext import db
 import datetime
 import time
-"""from dateutil import parser
-"""
+"""from dateutil import parser"""
 
 """
 Clase para manipulacion de Datos
@@ -37,16 +36,6 @@ def deleteUsuario(usuario):
 	usuario = db.get(usuario)
 	db.delete(usuario)
 
-def getUsuario(usuario):
-	usuario = db.get(usuario)
+def getUsuario(usuarioKey):
+	usuario = db.get(usuarioKey)
 	return usuario
-
-def updateUsuario(pusuario,pnombre,pmatricula,papellidop,papellidom,ptipo):
-	usuario = db.get(pusuario)
-	usuario.nombre = pnombre
-	usuario.matricula = pmatricula
-	usuario.apellidop = papellidop
-	usuario.apellidom = papellidom
-	usuario.tipo = ptipo
-	usuario.put()
-	

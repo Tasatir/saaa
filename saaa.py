@@ -19,6 +19,7 @@ import urllib
 import hashlib
 #Layer de comunicacion con Modelo
 from modelo.Layer import *
+from modelo.Layer2 import *
 #Framework de Web para Python
 import webapp2
                                   
@@ -135,7 +136,7 @@ class GrabaUsuario(webapp2.RequestHandler):
 		
 		password = md5
 		
-		grabaUsuario(matricula,password,nombre,apellidop,apellidop,tipo)
+		grabaUsuario(matricula,password,nombre,apellidop,apellidom,tipo)
 
 class IniciaSesion(webapp2.RequestHandler):
 	""" Entrada: al dar click en iniciar sesión en la pantalla principal
@@ -252,21 +253,22 @@ class EliminaUsuario(webapp2.RequestHandler):
 
 class EditaUsuario(webapp2.RequestHandler):
 	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
 		usuarioKey = self.request.get('key')
 		usuario = getUsuario(usuarioKey);
 		_despliegaEditaUsuario(self, usuario, '/vistas/editaUsuario.html')
 
 class GuardaCambiosUsuario(webapp2.RequestHandler):
 	def post(self):
-		usuarioKey = self.request.get('key')
-		usuario = getUsuario(usuarioKey);
+		usuarioKey = self.request.get('usuarioKey')
 		nombre = self.request.get('nombre')
 		matricula = self.request.get('matricula')
 		apellidop = self.request.get('apellidop')
 		apellidom = self.request.get('apellidom')
 		tipo = self.request.get('tipo')
 		
-		actualizaUsuario(usuario,nombre,matricula,apellidop,apellidom,tipo)
+		usuario = getUsuario(usuarioKey);
+		updateUsuario(usuario,nombre,matricula,apellidop,apellidom,tipo)
 		self.redirect('/verUsuarios')
 
 """

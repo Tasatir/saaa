@@ -10,11 +10,11 @@
 		<div class="content">
 			<form class="login" action="/guardaCambiosUsuario" method="post">
 				<h1>Modificación de usuario</h1> 
-				<input="hidden" name="key" value={{usuario.key()}}
+				<input type="hidden" name="usuarioKey" value={{usuario.key()}} />
 				<p>Matrícula:</p>
-				<input type="text" name="matricula" value={{ usuario.matricula }} />
+				<input type="text" name="matricula" value={{usuario.matricula}} />
 				<label for="tipo">Tipo de usuario</label>
-				<select name="tipo" value={{ usuario.tipo }} >
+				<select name="tipo" value={{usuario.tipo}} >
 					<option value="Alumno">Alumno</option>
 					<option value="Doctor">Doctor</option>
 					<option value="Encargado">Encargado</option>
@@ -22,11 +22,11 @@
 				</select>
 				<br></br>
 				<p>Nombre:</p>
-				<input type="text" name="nombre" value={{ usuario.nombre }} />
+				<input type="text" name="nombre" value={{usuario.nombre}} />
 				<p>Apellido Paterno:</p>
-				<input type="text" name="apellidop" value={{ usuario.apellidop }} />
+				<input type="text" name="apellidop" value={{usuario.apellidop}} />
 				<p>Apellido Materno:</p>
-				<input type="text" name="apellidom" value={{ usuario.apellidom }} />
+				<input type="text" name="apellidom" value={{usuario.apellidom}} />
 				<br />
 				<input type="submit" value="Guardar Cambios" />
 			</form>
