@@ -157,11 +157,6 @@ class Bienvenida(webapp2.RequestHandler):
 		self.response.headers['Content-Type'] = 'text/html'
 		_despliegaBienvenida(self, '/vistas/bienvenida.html')
 
-class AgregarClinica(webapp2.RequestHandler):
-	def get(self):
-		self.response.headers['Content-Type'] = 'text/html'
-		_despliegaAgregarClinica(self, '/vistas/agregarClinica.html')
-
 class AgregaHorarioClinica(webapp2.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
@@ -175,47 +170,142 @@ class AgregarHorario(webapp2.RequestHandler):
 		clinica = self.request.get('clinica')
 		_despliegaAgregarHorario(self,clinica, '/vistas/agregarHorario.html')
 
-class MostrarHorariosClinica(webapp2.RequestHandler):
+
+#=======================================Funciones de Clinica
+class AgregarClinica(webapp2.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
-		clinica = self.request.get('key')
-		horarios = verHorarios(clinica)
-		_despliegaMostrarHorariosClinica(self,horarios,clinica, '/vistas/mostrarHorariosClinica.html')
+		_despliegaAgregarClinica(self, '/vistas/Clinica/agregarClinica.html')
 
 class GrabaClinica(webapp2.RequestHandler):
 	def post(self):
+		key = self.request.get('key')
 		nombre = self.request.get('nombre')
-		grabaClinica(nombre)
-		self.redirect('/verClinicas') #redirección a listar pacientes
-
-class GrabaHorario(webapp2.RequestHandler):
-	def post(self):
-		clinica = self.request.get('clinica')
-		horaInicio = self.request.get('horaInicio')
-		horaFin = self.request.get('horaFin')
-		dia = self.request.get('dia')
 		descripcion = self.request.get('descripcion')
-		setHorario(clinica,horaInicio,horaFin,dia,descripcion)
-		self.redirect('/mostrarHorariosClinica?key='+clinica) #redirección ver horarios de clinica
+		localizacion = self.request.get('localizacion')
+		unidades = int(self.request.get('unidades'))
+		defectuosas = int(self.request.get('defectuosas'))
+		if(key == None):
+			grabaClinica(nombre,descripcion,localizacion,unidades,defectuosas)
+		else:
+			actualizaClinica(key,nombre,descripcion,localizacion,unidades,defectuosas)
+		self.redirect('/verClinicas') #Redireccion a la vista de clinicas
 
-class EliminaHorario(webapp2.RequestHandler):
+class EliminaClinica(webapp2.RequestHandler):
 	def get(self):
-		horarioKey = self.request.get('key')
-        	deleteHorario(horarioKey)
-        	self.redirect('/mostrarHorariosClinica?key='+self.request.get('clinica')) #redirección ver horarios de clinica
-
-
-class registraCita(webapp2.RequestHandler):
-	def get(self):
-		self.response.headers['Content-Type'] = 'text/html'
-		_despliegaRegistraCita(self, '/vistas/registraCita.html')	
+		key = self.request.get('key')
+		eliminaClinica(key)
+		self.redirect('/verClinicas') #Redireccion a las clinicas
 
 class VerClinicas(webapp2.RequestHandler):
 	#@before_filter
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
 		clinicas = getAllClinicas()
-		_despliegaVerClinicas(self, clinicas, '/vistas/verClinicas.html')
+		_despliegaVerClinicas(self, clinicas, '/vistas/Clinica/verClinicas.html')
+
+class EditaClinica(webapp2.RequestHandler):
+	#@before_filter
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		clinica = db.get(self.request.get('key'))
+		_despliegaEditaClinica(self, clinica, '/vistas/Clinica/editaClinica.html')
+
+#=======================================Fin de manejos de Clinicas
+
+
+#=======================================Inicia Manejo de Grupos
+class AgregarGrupo(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		_despliegaAgregarGrupo(self,self.request.get('key'), '/vistas/Grupo/agregarGrupo.html')
+
+class GrabarGrupo(webapp2.RequestHandler):
+	def post(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		key = self.request.get('key')
+		clinica = self.request.get('clinica')
+		nombre = self.request.get('nombre')
+		descripcion = self.request.get('descripcion')
+		if(key == None or  key == ""):
+			grabaGrupo(clinica,nombre,descripcion)
+		else:
+			actualizaGrupo(key,nombre,descripcion)
+		self.redirect('/verGrupos?key='+clinica) #Redireccion a la vista de Grupos de una Clinica
+
+class EliminarGrupo(webapp2.RequestHandler):
+	def get(self):
+		key = self.request.get('key')
+		eliminaGrupo(key)
+		self.redirect('/verGrupos?key='+self.request.get('clinica')) #Redireccion a la vista de los Grupos
+
+class VerGrupos(webapp2.RequestHandler):
+	#@before_filter
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		grupos = getAllGrupos(self.request.get('key'))
+		clinica = getObject(self.request.get('key'))
+		_despliegaVerGrupos(self,clinica, grupos, '/vistas/Grupo/verGrupos.html')
+
+class EditarGrupo(webapp2.RequestHandler):
+	#@before_filter
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		grupo = db.get(self.request.get('key'))
+		clinica = self.request.get('clinica')
+		_despliegaEditaGrupo(self, clinica, grupo, '/vistas/Grupo/editaGrupo.html')
+
+#=======================================Fin de manejo de Grupos
+#=======================================Inicia Manejo de Horarios
+class AgregarHorario(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		_despliegaAgregarHorario(self,self.request.get('key'), '/vistas/Horario/agregarHorario.html')
+
+class GrabarHorario(webapp2.RequestHandler):
+	def post(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		key = self.request.get('key')
+		grupo = self.request.get('grupo')
+		descripcion = self.request.get('descripcion')
+		dia = self.request.get('dia')
+		horaInicio = self.request.get('horaInicio')
+		horaFin = self.request.get('horaFin')
+		if(key == None or  key == ""):
+			grabaHorario(grupo,descripcion,dia,horaInicio,horaFin)
+		else:
+			actualizaGrupo(key,descripcion,dia,horaInicio,horaFin)
+		self.redirect('/verHorarios?key='+grupo) #Redireccion a la vista de Grupos de una Clinica
+
+class EliminarHorario(webapp2.RequestHandler):
+	def get(self):
+		key = self.request.get('key')
+		eliminaHorario(key)
+		self.redirect('/verHorarios?key='+self.request.get('grupo')) #Redireccion a la vista de Horarios
+
+class VerHorarios(webapp2.RequestHandler):
+	#@before_filter
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		#horarios = getAllHorarios(self.request.get('key'))
+		grupo = getObject(self.request.get('key'))
+		_despliegaVerHorarios(self,grupo, grupo.horarios, '/vistas/Horario/verHorarios.html')
+
+class EditarHorario(webapp2.RequestHandler):
+	#@before_filter
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		grupo = db.get(self.request.get('key'))
+		clinica = self.request.get('clinica')
+		_despliegaEditaGrupo(self, clinica, grupo, '/vistas/Grupo/editaGrupo.html')
+
+#=======================================Fin de manejo de Horario
+
+class registraCita(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		_despliegaRegistraCita(self, '/vistas/registraCita.html')	
+
 		
 
 """
@@ -254,14 +344,49 @@ def _despliegaAgregarClinica(self, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({}))
 
-def _despliegaAgregarHorario(self,clinica, templateFile):
+"""
+Despliega la vista para agregar un grupo nuevo
+"""
+def _despliegaAgregarGrupo(self,clinica, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinica':clinica}))
+
+"""
+Despliega la vista para agregar un horario Nuevo
+"""
+def _despliegaAgregarHorario(self,grupo, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'grupo':grupo}))
+
 
 def _despliegaVerClinicas(self, clinicas, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinicas': clinicas }))
 
+"""
+ Vista de Grupos de una Clinica en Especial
+"""
+def _despliegaVerGrupos(self, clinica, grupos, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'grupos': grupos,'clinica':clinica}))
+
+"""
+ Vista de Grupos de una Clinica en Especial
+"""
+def _despliegaVerHorarios(self, grupo, horarios, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'grupo': grupo,'horarios':horarios}))
+
+"""
+	Vista para editar Un grupo en especial
+"""
+def _despliegaEditaGrupo(self,clinica,grupo, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'grupo':grupo,'clinica':clinica}))
+
+def _despliegaEditaClinica(self, clinica, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'clinica': clinica }))
 
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/iniciaSesion', IniciaSesion),
@@ -269,16 +394,28 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/verUsuarios', VerUsuarios),
                                ('/registroAlumno', RegistroAlumno),
                                ('/grabaAlumno', GrabaAlumno),
-                               ('/verClinicas', VerClinicas),
-                               ('/agregarClinica', AgregarClinica),
                                ('/agregaHorarioClinica', AgregaHorarioClinica),
                                ('/agregarHorario', AgregarHorario),
-                               ('/grabaHorario', GrabaHorario),
-                               ('/mostrarHorariosClinica', MostrarHorariosClinica),
-                               ('/grabaClinica', GrabaClinica),
                                ('/registraCita', registraCita),
-                               ('/eliminarHorario', EliminaHorario),
+                                #Manejo de Clinicas
                                ('/grabaClinica', GrabaClinica),
-                               ('/eliminarHorario', EliminaHorario),
-                               ('/cerrarSesion', CerrarSesion),
-                               ('/grabaClinica', GrabaClinica)], debug=True)
+                               ('/editaClinica', EditaClinica),
+                               ('/eliminaClinica', EliminaClinica),
+                               ('/verClinicas', VerClinicas),
+                               ('/agregarClinica', AgregarClinica),
+                                #Fin manejo de Clinica
+                                #Inicio de Manejo de Grupos
+                               ('/verGrupos', VerGrupos),
+                               ('/grabarGrupo', GrabarGrupo),
+                               ('/eliminarGrupo', EliminarGrupo),
+                               ('/agregarGrupo', AgregarGrupo),
+                               ('/editarGrupo', EditarGrupo),
+                                #Fin de manejo de Grupo
+                                #Inicio de Manejo de Horarios
+                               ('/verHorarios', VerHorarios),
+                               ('/grabarHorario', GrabarHorario),
+                               ('/eliminarHorario', EliminarHorario),
+                               ('/agregarHorario', AgregarHorario),
+                               ('/editarHorario', EditarHorario),
+                                #Fin de manejo de Grupo
+                               ('/cerrarSesion', CerrarSesion)], debug=True)
