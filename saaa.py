@@ -190,13 +190,6 @@ class AgregaHorarioClinica(webapp2.RequestHandler):
 		_despliegaAgregaHorarioClinica(self,clinicas, '/vistas/agregarHorarioClinica.html')
 
 
-class AgregarHorario(webapp2.RequestHandler):
-	def get(self):
-		self.response.headers['Content-Type'] = 'text/html'
-		clinica = self.request.get('clinica')
-		_despliegaAgregarHorario(self,clinica, '/vistas/agregarHorario.html')
-
-
 #=======================================Funciones de Clinica
 class AgregarClinica(webapp2.RequestHandler):
 	def get(self):
@@ -211,7 +204,7 @@ class GrabaClinica(webapp2.RequestHandler):
 		localizacion = self.request.get('localizacion')
 		unidades = int(self.request.get('unidades'))
 		defectuosas = int(self.request.get('defectuosas'))
-		if(key == None):
+		if(key == None or key ==""):
 			grabaClinica(nombre,descripcion,localizacion,unidades,defectuosas)
 		else:
 			actualizaClinica(key,nombre,descripcion,localizacion,unidades,defectuosas)
@@ -222,7 +215,6 @@ class EliminaClinica(webapp2.RequestHandler):
 		key = self.request.get('key')
 		eliminaClinica(key)
 		self.redirect('/verClinicas') #Redireccion a las clinicas
-<<<<<<< HEAD
 
 class VerClinicas(webapp2.RequestHandler):
 	#@before_filter
@@ -239,27 +231,6 @@ class EditaClinica(webapp2.RequestHandler):
 		_despliegaEditaClinica(self, clinica, '/vistas/Clinica/editaClinica.html')
 
 #=======================================Fin de manejos de Clinicas
-
-=======
-
-class VerClinicas(webapp2.RequestHandler):
-	#@before_filter
-	def get(self):
-		self.response.headers['Content-Type'] = 'text/html'
-		clinicas = getAllClinicas()
-		_despliegaVerClinicas(self, clinicas, '/vistas/Clinica/verClinicas.html')
-
-class EditaClinica(webapp2.RequestHandler):
-	#@before_filter
-	def get(self):
-		self.response.headers['Content-Type'] = 'text/html'
-		clinica = db.get(self.request.get('key'))
-		_despliegaEditaClinica(self, clinica, '/vistas/Clinica/editaClinica.html')
-
-#=======================================Fin de manejos de Clinicas
-
->>>>>>> merged
-
 #=======================================Inicia Manejo de Grupos
 class AgregarGrupo(webapp2.RequestHandler):
 	def get(self):
@@ -341,20 +312,12 @@ class EditarHorario(webapp2.RequestHandler):
 	#@before_filter
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
-		grupo = db.get(self.request.get('key'))
-		clinica = self.request.get('clinica')
-		_despliegaEditaGrupo(self, clinica, grupo, '/vistas/Grupo/editaGrupo.html')
+		horario = db.get(self.request.get('key'))
+		grupo = self.request.get('grupo')
+		_despliegaEditaHorario(self, grupo, horario, '/vistas/Horario/editaHorario.html')
 
 #=======================================Fin de manejo de Horario
 
-<<<<<<< HEAD
-class registraCita(webapp2.RequestHandler):
-	def get(self):
-		self.response.headers['Content-Type'] = 'text/html'
-		_despliegaRegistraCita(self, '/vistas/registraCita.html')	
-
-		
-=======
 class EliminaUsuario(webapp2.RequestHandler):
 	def get(self):
 		usuarioKey = self.request.get('key')
@@ -378,7 +341,6 @@ class GuardaCambiosUsuario(webapp2.RequestHandler):
 		tipo = self.request.get('tipo')
 		actualizaUsuario(usuario,nombre,matricula,apellidop,apellidom,tipo)
 		self.redirect('/verUsuarios')
->>>>>>> merged
 
 """
 Views
@@ -420,39 +382,15 @@ def _despliegaAgregarClinica(self, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({}))
 
-<<<<<<< HEAD
 """
 Despliega la vista para agregar un grupo nuevo
 """
 def _despliegaAgregarGrupo(self,clinica, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinica':clinica}))
-=======
-<<<<<<< HEAD
-def _despliegaAgregarHorario(self,clinica, templateFile):
-		template = env.get_template(templateFile)
-		self.response.out.write(template.render({'clinica':clinica}))
-=======
-"""
-Despliega la vista para agregar un grupo nuevo
-"""
-def _despliegaAgregarGrupo(self,clinica, templateFile):
-		template = env.get_template(templateFile)
-		self.response.out.write(template.render({'clinica':clinica}))
->>>>>>> merged
-
-"""
-Despliega la vista para agregar un horario Nuevo
-"""
 def _despliegaAgregarHorario(self,grupo, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'grupo':grupo}))
-
-<<<<<<< HEAD
-=======
->>>>>>> Agregada Logica de Clinicas|Grupos|Horarios
->>>>>>> merged
-
 def _despliegaVerClinicas(self, clinicas, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinicas': clinicas }))
@@ -471,16 +409,6 @@ def _despliegaVerGrupos(self, clinica, grupos, templateFile):
 """
  Vista de Grupos de una Clinica en Especial
 """
-<<<<<<< HEAD
-def _despliegaVerGrupos(self, clinica, grupos, templateFile):
-		template = env.get_template(templateFile)
-		self.response.out.write(template.render({'grupos': grupos,'clinica':clinica}))
-
-"""
- Vista de Grupos de una Clinica en Especial
-"""
-=======
->>>>>>> merged
 def _despliegaVerHorarios(self, grupo, horarios, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'grupo': grupo,'horarios':horarios}))
@@ -492,6 +420,14 @@ def _despliegaEditaGrupo(self,clinica,grupo, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'grupo':grupo,'clinica':clinica}))
 
+
+"""
+	Vista para editar Un horario
+"""
+def _despliegaEditaHorario(self,grupo, horario, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'grupo':grupo,'horario':horario}))
+
 def _despliegaEditaClinica(self, clinica, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinica': clinica }))
@@ -502,32 +438,18 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/verUsuarios', VerUsuarios),
                                ('/registroAlumno', RegistroAlumno),
                                ('/grabaAlumno', GrabaAlumno),
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
                                ('/registraUsuario', RegistraUsuario),
                                ('/grabaUsuario', GrabaUsuario),
                                ('/verClinicas', VerClinicas),
                                ('/agregarClinica', AgregarClinica),
-=======
->>>>>>> Agregada Logica de Clinicas|Grupos|Horarios
->>>>>>> merged
                                ('/agregaHorarioClinica', AgregaHorarioClinica),
                                ('/agregarHorario', AgregarHorario),
-                               ('/registraCita', registraCita),
                                 #Manejo de Clinicas
                                ('/grabaClinica', GrabaClinica),
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-                               ('/eliminarHorario', EliminaHorario),
                                ('/cerrarSesion', CerrarSesion),
                                ('/grabaClinica', GrabaClinica),
                                ('/eliminaUsuario', EliminaUsuario),
                                ('/editaUsuario', EditaUsuario),
-                               ('/guardaCambiosUsuario', GuardaCambiosUsuario)], debug=True)
-=======
->>>>>>> merged
                                ('/editaClinica', EditaClinica),
                                ('/eliminaClinica', EliminaClinica),
                                ('/verClinicas', VerClinicas),
@@ -547,8 +469,5 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/agregarHorario', AgregarHorario),
                                ('/editarHorario', EditarHorario),
                                 #Fin de manejo de Grupo
-                               ('/cerrarSesion', CerrarSesion)], debug=True)
-<<<<<<< HEAD
-=======
->>>>>>> Agregada Logica de Clinicas|Grupos|Horarios
->>>>>>> merged
+                               ('/cerrarSesion', CerrarSesion),
+				('/guardaCambiosUsuario', GuardaCambiosUsuario)], debug=True)
