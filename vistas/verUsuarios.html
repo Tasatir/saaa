@@ -8,9 +8,10 @@
 		<table border="1" > 
 			<tr>
 				<th width="300">tipo</th>
-				<th>nombre</th>
-				<th>matricula</th>
-				<th>password</th>
+				<th>Nombre</th>
+				<th>Apellido Paterno</th>
+				<th>Apellido Materno</th>
+				<th>Matricula</th>	
 				<td>.</td>
 				<td>.</td>
 			</tr>
@@ -18,8 +19,9 @@
 			<tr>
 				<td>{{ u.tipo }}</td>
 				<td>{{ u.nombre }}</td>
+				<td>{{ u.apellidop }}</td>
+				<td>{{ u.apellidom }}</td>
 				<td>{{ u.matricula }}</td>
-				<td>{{ u.password }}</td>
 				<td><a href=/editaUsuario?key={{u.key()}}>Edita</a></td>
 				<td><a href=/eliminaUsuario?key={{u.key()}}>Eliminar</a></td>
 			</tr>

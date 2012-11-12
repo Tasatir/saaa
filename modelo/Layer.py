@@ -2,7 +2,8 @@ from Modelo import *
 from google.appengine.ext import db
 import datetime
 import time
-from dateutil import parser
+"""from dateutil import parser
+"""
 
 """
 Clase para manipulacion de Datos
@@ -28,3 +29,24 @@ def setHorario(grupo,horaInicio,horaFin,dia,descripcion):
 def deleteHorario(horario):
     horario = db.get(horario)
     db.delete(horario)
+
+def grabaUsuario(matricula,password,nombre,apellidop,apellidom,tipo):
+    Usuario(matricula = matricula, password = password, nombre = nombre, apellidop = apellidop, apellidom = apellidom, tipo = tipo).put()
+
+def deleteUsuario(usuario):
+	usuario = db.get(usuario)
+	db.delete(usuario)
+
+def getUsuario(usuario):
+	usuario = db.get(usuario)
+	return usuario
+
+def updateUsuario(pusuario,pnombre,pmatricula,papellidop,papellidom,ptipo):
+	usuario = db.get(pusuario)
+	usuario.nombre = pnombre
+	usuario.matricula = pmatricula
+	usuario.apellidop = papellidop
+	usuario.apellidom = papellidom
+	usuario.tipo = ptipo
+	usuario.put()
+	

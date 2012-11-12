@@ -108,7 +108,34 @@ class GrabaAlumno(webapp2.RequestHandler):
 		md5 = h.hexdigest()
 		
 		password = md5
-            
+
+class RegistraUsuario(webapp2.RequestHandler):
+	""" Formulario para registrar usuarios
+	"""
+	
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+				
+		_despliegaRegistraUsuario(self, '/vistas/registraUsuario.html')
+
+class GrabaUsuario(webapp2.RequestHandler):
+	
+	def post(self):
+		nombre = self.request.get('nombre')
+		matricula = self.request.get('matricula')
+		password = self.request.get('password')
+		apellidop = self.request.get('apellidop')
+		apellidom = self.request.get('apellidom')
+		tipo = self.request.get('tipo')
+		
+		# Generar password
+		h =  hashlib.new('ripemd160')
+		h.update(password)
+		md5 = h.hexdigest()
+		
+		password = md5
+		
+		grabaUsuario(matricula,password,nombre,apellidop,apellidop,tipo)
 
 class IniciaSesion(webapp2.RequestHandler):
 	""" Entrada: al dar click en iniciar sesión en la pantalla principal
@@ -216,7 +243,31 @@ class VerClinicas(webapp2.RequestHandler):
 		self.response.headers['Content-Type'] = 'text/html'
 		clinicas = getAllClinicas()
 		_despliegaVerClinicas(self, clinicas, '/vistas/verClinicas.html')
+
+class EliminaUsuario(webapp2.RequestHandler):
+	def get(self):
+		usuarioKey = self.request.get('key')
+		deleteUsuario(usuarioKey)
+		self.redirect('/verUsuarios')
+
+class EditaUsuario(webapp2.RequestHandler):
+	def get(self):
+		usuarioKey = self.request.get('key')
+		usuario = getUsuario(usuarioKey);
+		_despliegaEditaUsuario(self, usuario, '/vistas/editaUsuario.html')
+
+class GuardaCambiosUsuario(webapp2.RequestHandler):
+	def post(self):
+		usuarioKey = self.request.get('key')
+		usuario = getUsuario(usuarioKey);
+		nombre = self.request.get('nombre')
+		matricula = self.request.get('matricula')
+		apellidop = self.request.get('apellidop')
+		apellidom = self.request.get('apellidom')
+		tipo = self.request.get('tipo')
 		
+		actualizaUsuario(usuario,nombre,matricula,apellidop,apellidom,tipo)
+		self.redirect('/verUsuarios')
 
 """
 Views
@@ -241,6 +292,10 @@ def _despliegaBienvenida(self, templateFile):
 def _despliegaRegistroAlumno(self, clinicas, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinicas': clinicas }))
+		
+def _despliegaRegistraUsuario(self, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({}))
 
 def _despliegaAgregaHorarioClinica(self, clinicas, templateFile):
 		template = env.get_template(templateFile)
@@ -261,6 +316,10 @@ def _despliegaAgregarHorario(self,clinica, templateFile):
 def _despliegaVerClinicas(self, clinicas, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinicas': clinicas }))
+		
+def _despliegaEditaUsuario(self, usuario, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'usuario': usuario }))
 
 
 app = webapp2.WSGIApplication([('/', MainPage),
@@ -269,6 +328,8 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/verUsuarios', VerUsuarios),
                                ('/registroAlumno', RegistroAlumno),
                                ('/grabaAlumno', GrabaAlumno),
+                               ('/registraUsuario', RegistraUsuario),
+                               ('/grabaUsuario', GrabaUsuario),
                                ('/verClinicas', VerClinicas),
                                ('/agregarClinica', AgregarClinica),
                                ('/agregaHorarioClinica', AgregaHorarioClinica),
@@ -281,4 +342,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/grabaClinica', GrabaClinica),
                                ('/eliminarHorario', EliminaHorario),
                                ('/cerrarSesion', CerrarSesion),
-                               ('/grabaClinica', GrabaClinica)], debug=True)
+                               ('/grabaClinica', GrabaClinica),
+                               ('/eliminaUsuario', EliminaUsuario),
+                               ('/editaUsuario', EditaUsuario),
+                               ('/guardaCambiosUsuario', GuardaCambiosUsuario)], debug=True)
