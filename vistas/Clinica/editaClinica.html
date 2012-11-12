@@ -1,0 +1,18 @@
+<html>
+	<head>
+		{% include '/vistas/head.html' %}
+	</head>
+	<body>
+		{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+		<form action="/grabaClinica" method="post">
+			<input type="hidden" name="key" value="{{clinica.key()}}"/>
+		   <div>Nombre: <input type="text" name="nombre" value="{{clinica.nombre}}"/></div>
+		   <div>Descripcion: <input type="text" name="descripcion" value="{{clinica.descripcion}}" /></div>
+		   <div>Localizacion: <input type="text" name="localizacion" value="{{clinica.localizacion}}" /></div>
+		   <div>Unidades: <input type="text" name="unidades" value="{{clinica.unidades}}" /></div>
+		   <div>Unidades defectuosas: <input type="text" name="defectuosas" value="{{clinica.defectuosas}}" /></div>
+		   <div><input type="submit" value="Guardar clínica"></div>
+		</form>
+	</body>
+</html>

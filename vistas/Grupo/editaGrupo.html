@@ -1,0 +1,16 @@
+<html>
+	<head>
+		{% include '/vistas/head.html' %}
+	</head>
+	<body>
+		{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+		<form action="/grabarGrupo" method="post">
+			<input type="hidden" name="key" value="{{grupo.key()}}"/>
+			<input type="hidden" name="clinica" value="{{clinica}}"/>
+		   <div>Nombre: <input type="text" name="nombre" value="{{grupo.nombre}}"/></div>
+		   <div>Descripcion: <input type="text" name="descripcion" value="{{grupo.descripcion}}" /></div>
+		   <div><input type="submit" value="Guardar Grupo"></div>
+		</form>
+	</body>
+</html>

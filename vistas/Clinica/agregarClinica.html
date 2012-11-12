@@ -1,0 +1,17 @@
+<html>
+	<head>
+		{% include '/vistas/head.html' %}
+	</head>
+	<body>
+		{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+		<form action="/grabaClinica" method="post">
+		   <div>Nombre: <input type="text" name="nombre" /></div>
+		   <div>Descripcion: <input type="text" name="descripcion" /></div>
+		   <div>Localizacion: <input type="text" name="localizacion" /></div>
+		   <div>Unidades: <input type="text" name="unidades" /></div>
+		   <div>Unidades defectuosas: <input type="text" name="defectuosas" /></div>
+		   <div><input type="submit" value="Guardar clínica"></div>
+		</form>
+	</body>
+</html>

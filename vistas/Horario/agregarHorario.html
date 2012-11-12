@@ -1,0 +1,31 @@
+<html>
+	<head>
+		{% include '/vistas/head.html' %}
+	</head>
+	<body>
+		{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+		<form action="/grabarHorario" method="post">
+		   <input type="hidden" name="grupo" value="{{grupo}}"/>
+		   <div>Descripción: <input type="text" name="descripcion" /></div>
+		   <div>Dia:<br/>
+				<input type="radio" name="dia"  value="Lunes" checked/>Lunes<br />
+				<input type="radio" name="dia" value="Martes" />Martes<br />
+				<input type="radio" name="dia" value="Miercoles" />Miercoles<br />
+				<input type="radio" name="dia" value="Jueves" />Jueves<br />
+				<input type="radio" name="dia" value="Viernes" />Viernes<br />
+				<input type="radio" name="dia" value="Sabado" />Sabado<br />
+				<input type="radio" name="dia" value="Domingo" />Domingo<br /><br />
+			</div>
+		   <div>Inicio: <input id="time1" type="text" name="horaInicio" /></div>
+		   <div>Fin: <input id="time2" type="text" name="horaFin" /></div>
+		   <div><input type="submit" value="Guardar Horario"></div>
+		</form>
+	</body>
+	<link href="/includes/stylesheet.css" rel="stylesheet" type="text/css"/>
+	<link href="/includes/jquery-ui-1.9.1.custom.min.css" rel="stylesheet" type="text/css"/>
+	<script language="JavaScript" src="/includes/jquery.js"></script>
+	<script language="JavaScript" src="/includes/jquery-ui-1.9.1.custom.min.js"></script>
+	<script language="JavaScript" src="/includes/date-time.js"></script>
+	<script language="JavaScript" src="/includes/agregarHorario.js"></script>
+</html>
