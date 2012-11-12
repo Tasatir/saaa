@@ -6,13 +6,13 @@ class Clinica(db.Model):
     #Nombre de la clinica (Ejemplo: Laboratorio de Coronas 3)
     nombre = db.StringProperty(required = True)
     #Alguna descripcion, no es necesaria
-    descripcion = db.StringProperty()
+    descripcion = db.StringProperty(default="Ninguna")
     #La localizacion dentro de la facultad
     localizacion = db.StringProperty(required = True)
     #Numero de unidades en la clinica
     unidades = db.IntegerProperty(required = True)
     #Numero de unidades defectuosas y su numero de unidad
-    defectuosas = db.ListProperty(int)
+    defectuosas = db.IntegerProperty(required = True)
 
 #Usuarios, qu epueden ser alumnos, doctores, encargados o administradores
 class Usuario(db.Model):
