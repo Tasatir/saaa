@@ -1,0 +1,24 @@
+<html>
+  <head>
+    {% include '/vistas/head.html' %}
+  </head>
+  <body> 
+	{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+	<h3>{{usuario.matricula}} {{usuario.nombre}} {{usuario.apellidop}} > Clínica {{clinica.nombre}} > Selecciona Grupo </h3>
+      <table border="1" > 
+         <tr>
+				<th width="300">Nombre</th>
+				<td>Descripcion</td>
+				<td>.</td>
+         </tr>
+      {% for g in clinica.grupos %}
+		<tr>
+			<td>{{g.nombre}}</td>
+			<td>{{g.descripcion}}</td>
+			<td><a href=/guardaAsignacion?usuario={{usuario.key()}}&grupo={{g.key()}}>Asignar</a></td>
+		</tr>
+      {% endfor %}
+      </table>
+  </body>
+</html>

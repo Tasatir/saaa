@@ -275,6 +275,37 @@ class EditarGrupo(webapp2.RequestHandler):
 
 #=======================================Fin de manejo de Grupos
 #=======================================Inicia Manejo de Horarios
+#=======================================Inicia Manejo de Asignacion de Grupo
+class UsuariosAsignacion(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type']= 'text/html'
+		usuarios = getAllUsuarios()
+		_despliegaUsuariosAsignacion(self,usuarios,'/vistas/Asignacion/verUsuarios.html')
+
+class ClinicasAsignacion(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type']= 'text/html'
+		clinicas = getAllClinicas()
+		usuario = getObject(self.request.get('usuario'))
+		_despliegaClinicasAsignacion(self,usuario,clinicas,'/vistas/Asignacion/verClinicas.html')
+
+class GruposAsignacion(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type']= 'text/html'
+		clinica = getObject(self.request.get('clinica'))
+		usuario = getObject(self.request.get('usuario'))
+		_despliegaGruposAsignacion(self,usuario,clinica,'/vistas/Asignacion/verGrupos.html')
+
+class GuardaAsignacion(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type']= 'text/html'
+		grupo = self.request.get('grupo')
+		usuario = self.request.get('usuario')
+		#Crea la asignacion entre ambos objetos
+		creaAsignacion(usuario,grupo)
+		_despliegaExito(self,"Usuario Asignado Correctamente",'/asignaUsuarios1','/vistas/Exito.html')
+#=======================================Fin de Manejo de Asignacion de Grupo
+
 class AgregarHorario(webapp2.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
@@ -426,6 +457,33 @@ def _despliegaEditaGrupo(self,clinica,grupo, templateFile):
 
 
 """
+	Vista para ver usuarios del sistema
+"""
+def _despliegaUsuariosAsignacion(self,usuarios, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'usuarios':usuarios}))
+
+"""
+	Vista para ver clinicas para asignar
+"""
+def _despliegaClinicasAsignacion(self,usuario,clinicas,templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'usuario':usuario,'clinicas':clinicas}))
+
+"""
+	Vista para ver grupos a asignar
+"""
+def _despliegaGruposAsignacion(self,usuario,clinica,templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'usuario':usuario,'clinica':clinica}))
+
+"""
+	Despliega un mensaje de Exito y la liga de retorno
+"""
+def _despliegaExito(self,mensaje,liga,templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'mensaje':mensaje,'liga':liga}))
+"""
 	Vista para editar Un horario
 """
 def _despliegaEditaHorario(self,grupo, horario, templateFile):
@@ -473,5 +531,11 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/agregarHorario', AgregarHorario),
                                ('/editarHorario', EditarHorario),
                                 #Fin de manejo de Grupo
+				#Inicia manejo de Asignacion
+                               ('/asignaUsuarios1', UsuariosAsignacion),
+	                       ('/asignaUsuarios2', ClinicasAsignacion),
+		               ('/asignaUsuarios3', GruposAsignacion),
+			       ('/guardaAsignacion', GuardaAsignacion),			
+				#Finaliza manejo de Asignacion
                                ('/cerrarSesion', CerrarSesion),
 				('/guardaCambiosUsuario', GuardaCambiosUsuario)], debug=True)

@@ -1,0 +1,26 @@
+<html>
+  <head>
+    {% include '/vistas/head.html' %}
+  </head>
+  <body> 
+	{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+	<h3>{{usuario.matricula}} {{usuario.nombre}} {{usuario.apellidop}} > Selecciona Clinica </h3>
+      <table border="1" > 
+         <tr>
+				<th width="300">Nombre</th>
+				<td>Descripción</td>
+				<td>Localización</td>
+				<td>.</td>
+         </tr>
+      {% for c in clinicas %}
+		<tr>
+			<td>{{c.nombre}}</td>
+			<td>{{c.descripcion}}</td>
+			<td>{{c.localizacion}}</td>
+			<td><a href=/asignaUsuarios3?usuario={{usuario.key()}}&clinica={{c.key()}}>Seleccionar</a></td>
+		</tr>
+      {% endfor %}
+      </table>
+  </body>
+</html>

@@ -51,6 +51,12 @@ def eliminaClinica(key):
 def getAllClinicas():
     return db.GqlQuery("SELECT * FROM Clinica")
 
+"""
+ Regresa todos los usuarios de la Base de Datos
+"""
+def getAllUsuarios():
+	return db.GqlQuery("SELECT * FROM Usuario ORDER BY tipo")
+
 
 """
 Regresa todos los grupos de una clinica
@@ -154,6 +160,19 @@ def eliminaHorario(key):
     horario = db.get(key)
     db.delete(horario)
 
+"""
+   Crea una asignacion de un usuario a un grupo
+	Lo hace de forma transaccional
+"""
+@db.transactional(xg=True)
+def creaAsignacion(usuario,grupo):
+	if( usuario == None or usuario == "" or grupo == None or grupo == ""):
+		return
+	usuario = db.get(usuario)
+	grupo = db.get(grupo)
+	ciclo = None
+	Usuario_Clinica(usuario = usuario, grupo = grupo, ciclo = ciclo).put()
+	
 
 def setHorario(grupo,horaInicio,horaFin,dia,descripcion):
     format="%H:%M"

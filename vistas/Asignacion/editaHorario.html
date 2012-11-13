@@ -1,0 +1,60 @@
+<html>
+	<head>
+		{% include '/vistas/head.html' %}
+	</head>
+	<body>
+		{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+		<form action="/grabarHorario" method="post">
+		   <input type="hidden" name="grupo" value="{{grupo}}"/>
+		   <input type="hidden" name="horario" value="{{horario.key()}}"/>
+		   <div>Descripción: <input type="text" name="descripcion" value="{{horario.descripcion}}" /></div>
+		   <div>Dia:<br/>
+				<input type="radio" name="dia"  value="Lunes" 
+				{% if horario.dia == "Lunes" %}
+					checked
+				{% endif %}
+				/>Lunes<br />
+				<input type="radio" name="dia" value="Martes" 
+				{% if horario.dia == "Martes" %}
+					checked
+				{% endif %}
+				/>Martes<br />
+				<input type="radio" name="dia" value="Miercoles" 
+				{% if horario.dia == "Miercoles" %}
+					checked
+				{% endif %}
+				/>Miercoles<br />
+				<input type="radio" name="dia" value="Jueves" 
+				{% if horario.dia == 'Jueves' %}
+					checked
+				{% endif %}
+				/>Jueves<br />
+				<input type="radio" name="dia" value="Viernes" 
+				{% if horario.dia == "Viernes" %}
+					checked
+				{% endif %}
+				/>Viernes<br />
+				<input type="radio" name="dia" value="Sabado" 
+				{% if horario.dia == 'Sabado' %}
+					checked
+				{% endif %}
+				/>Sabado<br />
+				<input type="radio" name="dia" value="Domingo" 
+				{% if horario.dia == "Domingo" %}
+					checked
+				{% endif %}
+				/>Domingo<br /><br />
+			</div>
+		   <div>Inicio: <input id="time1" type="text" name="horaInicio" value="{{horario.horaInicio}}" /></div>
+		   <div>Fin: <input id="time2" type="text" name="horaFin" value="{{horario.horaFin}}"/></div>
+		   <div><input type="submit" value="Guardar Horario"></div>
+		</form>
+	</body>
+	<link href="/includes/stylesheet.css" rel="stylesheet" type="text/css"/>
+	<link href="/includes/jquery-ui-1.9.1.custom.min.css" rel="stylesheet" type="text/css"/>
+	<script language="JavaScript" src="/includes/jquery.js"></script>
+	<script language="JavaScript" src="/includes/jquery-ui-1.9.1.custom.min.js"></script>
+	<script language="JavaScript" src="/includes/date-time.js"></script>
+	<script language="JavaScript" src="/includes/agregarHorario.js"></script>
+</html>
