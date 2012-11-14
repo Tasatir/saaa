@@ -9,7 +9,20 @@
 		   <input type="hidden" name="clinica" value="{{clinica}}"/>
 		   <div>Nombre: <input type="text" name="nombre" /></div>
 		   <div>Descripcion: <input type="text" name="descripcion" /></div>
+		   <div>Inicio de Agenda: <input type="text" id="time1" name="inicioAgenda" /></div>
+		   <div>Fin de Agenda: <input type="text" id="time2" name="finAgenda" /></div>
+		   <div>La agenda Termina:<br/>
+				<input type="radio" name="fa"  value="Mismo Dia" checked/>Mismo Dia<br />
+				<input type="radio" name="fa" value="Siguiente Dia" />Dia Siguiente<br />
+			</div>
 		   <div><input type="submit" value="Guardar Grupo"></div>
 		</form>
 	</body>
+	<link href="/includes/stylesheet.css" rel="stylesheet" type="text/css"/>
+	<link href="/includes/jquery-ui-1.9.1.custom.min.css" rel="stylesheet" type="text/css"/>
+	<script language="JavaScript" src="/includes/jquery.js"></script>
+	<script language="JavaScript" src="/includes/jquery-ui-1.9.1.custom.min.js"></script>
+	<script language="JavaScript" src="/includes/date-time.js"></script>
+	<script language="JavaScript" src="/includes/agregarHorario.js"></script>
+
 </html>

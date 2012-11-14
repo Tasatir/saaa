@@ -10,6 +10,7 @@
          <tr>
 				<th width="300">Nombre</th>
 				<td>Descripción</td>
+				<td>Inicio de Agenda</td>
 				<td>.</td>
 				<td>.</td>
 				<td>.</td>
@@ -18,6 +19,7 @@
 		<tr>
 			<td>{{g.nombre}}</td>
 			<td>{{g.descripcion}}</td>
+			<td>{{g.inicioAgenda|format_time}}</td>
 			<td><a href=/editarGrupo?key={{g.key()}}&clinica={{clinica.key()}}>Edita</a></td>
 			<td><a href=/eliminarGrupo?key={{g.key()}}&clinica={{clinica.key()}}>Eliminar</a></td>
 			<td><a href=/verHorarios?key={{g.key()}}>Horarios</a></td>

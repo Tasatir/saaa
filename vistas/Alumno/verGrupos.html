@@ -1,0 +1,28 @@
+<html>
+  <head>
+    {% include '/vistas/head.html' %}
+  </head>
+  <body> 
+	{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+	<h3>Tus Grupos</h3>
+      <table border="1" > 
+         <tr>
+				<th width="300">Clinica</th>
+				<th width="300">Nombre</th>
+				<td>Descripción</td>
+				<td>Inicio de Agenda</td>
+				<td>.</td>
+         </tr>
+      {% for g in grupos %}  
+		<tr>
+			<td>{{g.grupo.parent().nombre}}</td>
+			<td>{{g.grupo.nombre}}</td>
+			<td>{{g.grupo.descripcion}}</td>
+			<td>{{g.grupo.inicioAgenda|format_time}}</td>
+			<td><a href=/verHorariosDisponibles?key={{g.key()}}>Horarios</a></td>
+		</tr>
+      {% endfor %}
+      </table>
+  </body>
+</html>

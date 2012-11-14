@@ -9,9 +9,9 @@ Esta clase es de proposito general.
 
 
 class GeneralCounterShardConfig(db.Model):
-    """Mantiene un alista de el numero de fragmentos d ecada contador."""
+    """Mantiene una lista de el numero de fragmentos de cada contador."""
     name = db.StringProperty(required=True)
-    num_shards = db.IntegerProperty(required=True, default=20)
+    num_shards = db.IntegerProperty(required=True, default=80)
 
 
 class GeneralCounterShard(db.Model):
@@ -22,7 +22,6 @@ class GeneralCounterShard(db.Model):
 
 def get_count(name):
     """Regresa le valor de algun contador
-
     Parametros:
       name - El nombre del contador
     """

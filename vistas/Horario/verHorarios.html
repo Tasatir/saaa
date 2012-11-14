@@ -5,7 +5,7 @@
   <body> 
 	{% include '/vistas/header.html' %}
 		{% include '/vistas/menu.html' %}
-	<h3>Grupo: {{grupo.nombre}}</h3>
+	<h2>Clinica:{{grupo.parent().nombre}} > Grupo: {{grupo.nombre}}</h2>
       <table border="1" > 
          <tr>
 				<th width="300">Descripcion</th>

@@ -15,3 +15,8 @@ indexes:
   properties:
   - name: fecha
     direction: desc
+
+- kind: Usuario_Clinica
+  properties:
+  - name: usuario
+  - name: grupo

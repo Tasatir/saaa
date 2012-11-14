@@ -1,4 +1,5 @@
 from Modelo import *
+from ShardsCounter import *
 from google.appengine.ext import db
 import datetime
 import time
@@ -68,6 +69,7 @@ def getAllGrupos(key):
 		return None
 	clinica = db.get(key)
 	return clinica.grupos
+
 """
 Regresa todos los horarios de un grupo
 """
@@ -90,18 +92,20 @@ def getObject(key):
 """
 	Guarda un grupo nuevo en la base de datos
 """
-def grabaGrupo(clinica,nombre,descripcion):
+def grabaGrupo(clinica,nombre,descripcion,inicioAgenda,finAgenda,fa):
 	if(clinica == None):
 		return
 	clinica = db.get(clinica)
 	if(clinica == None):
 		return
-	Grupo(clinica = clinica,parent=clinica, nombre = nombre, descripcion = descripcion).put()
+	i = inicioAgenda.split(':')
+	f = finAgenda.split(':')
+	Grupo(clinica = clinica,parent=clinica, nombre = nombre, descripcion = descripcion,inicioAgenda=datetime.time(int(i[0]),int(i[1]),0,0),finAgenda=datetime.time(int(f[0]),int(f[1]),0,0),fa = fa).put()
 
 """
 	Actualiza un grupo ya existente en el Data Store
 """
-def actualizaGrupo(key,nombre,descripcion):
+def actualizaGrupo(key,nombre,descripcion,inicioAgenda,finAgenda,fa):
 	if(key == None):
 		return
 	grupo = db.get(key)
@@ -109,6 +113,11 @@ def actualizaGrupo(key,nombre,descripcion):
 		return
 	grupo.nombre = nombre
 	grupo.descripcion = descripcion
+	i = inicioAgenda.split(':')
+	f = finAgenda.split(':')
+	grupo.fa = fa
+	grupo.inicioAgenda=datetime.time(int(i[0]),int(i[1]),0,0)
+	grupo.finAgenda=datetime.time(int(f[0]),int(f[1]),0,0)
 	grupo.put()
 
 
@@ -157,8 +166,10 @@ def actualizaHorario(key,descripcion,dia,horaInicio,horaFin):
 		return
 	horario.descripcion = descripcion
 	horario.dia = dia
-	horario.horaInicio = horaInicio
-	horario.horaFin = horaFin
+	i=horaInicio.split(':')
+	f=horaFin.split(':')
+	horario.horaInicio=datetime.time(int(i[0]),int(i[1]),0,0)
+	horario.horaFin=datetime.time(int(f[0]),int(f[1]),0,0)
 	horario.put()
 
 
@@ -196,7 +207,45 @@ def creaAsignacion(usuario,grupo):
 	grupo = db.get(grupo)
 	ciclo = None
 	Usuario_Clinica(usuario = usuario, grupo = grupo, ciclo = ciclo).put()
-	
+
+def verificaDisponibilidadExample(h):
+	horario = db.get(h)
+	c = horario.parent().parent()
+	espacio = c.unidades-c.defectuosas
+	hoy = None
+	if((datetime.datetime.now()).weekday() == dameNumeroDia(horario.dia,0)):
+		hoy = datetime.date.today()
+	else:
+		hoy = datetime.date.today() + datetime.timedelta(days=1)
+	key = c.nombre+"-"+h+"-"+(hoy).strftime("%Y-%m-%d")
+	if(get_count(key) < espacio):
+		increment(key)
+		return get_count(key)
+	return get_count(key)
+
+		
+def verificaDisponibilidad(h,usuario,descripcion,folio):
+	horario = db.get(h)
+	c = horario.parent().parent()
+	lista = []
+	espacio = c.unidades-c.defectuosas
+	hoy = None
+	if((datetime.datetime.now()).weekday() == dameNumeroDia(horario.dia,0)):
+		hoy = datetime.date.today()
+	else:
+		hoy = datetime.date.today() + datetime.timedelta(days=1)
+	key = c.nombre+"-"+h+"-"+(hoy).strftime("%Y-%m-%d")
+	if(get_count(key) < espacio):
+		#Si hay espacio regresa un True
+		increment(key)
+		Cita(usuario = db.get(usuario),horario = horario,descripcion = descripcion, folio = folio).put()
+		lista.append(get_count(key))
+		lista.append(True)
+		return lista
+	#Si no hay espacio regresa un False
+	lista.append(get_count(key))	
+	lista.append(False)
+	return lista
 
 def grabaUsuario(matricula,password,nombre,apellidop,apellidom,tipo):
     Usuario(matricula = matricula, password = password, nombre = nombre, apellidop = apellidop, apellidom = apellidom, tipo = tipo).put()
@@ -208,3 +257,64 @@ def deleteUsuario(usuario):
 def getUsuario(usuarioKey):
 	usuario = db.get(usuarioKey)
 	return usuario
+
+def getAgendaValida(u):
+	usuario = getObject(u)
+	lista = getHorariosValidos(usuario)
+	return db.GqlQuery("SELECT * FROM Horario WHERE __key__ IN :1",lista);
+
+"""
+Regresa el dia de manana
+"""
+def getHorariosValidos(usuario):
+	horarios = []
+	#Trae todos los grupos a los que pertenece el usuario
+	grupos = db.GqlQuery("SELECT * FROM Usuario_Clinica WHERE usuario=:1",usuario.key())
+	for g in grupos:
+		for h in g.grupo.horarios:
+			#Si se encuentran en el dia limite
+			enMedio = False
+			if((datetime.date.today()).weekday() == dameNumeroDia(h.dia,-1)):
+				#Inicio de la agenda
+				inicio = datetime.datetime.now() 
+				inicio = inicio.replace(hour=g.grupo.inicioAgenda.hour,minute=g.grupo.inicioAgenda.minute)
+				#Fin de la agenda
+				fin = datetime.datetime.now() + datetime.timedelta(days=1)
+				fin = fin.replace(hour=g.grupo.finAgenda.hour,minute=g.grupo.finAgenda.minute)
+				if(inicio <= datetime.datetime.now() <= fin):
+					enMedio = True
+			if(((datetime.date.today()).weekday() == dameNumeroDia(h.dia,0)) and g.grupo.fa != "Mismo Dia"):
+				#Inicio de la agenda
+				inicio = datetime.today() - datetime.timedelta(days=1)
+				inicio = inicio.replace(hour=g.grupo.inicioAgenda.hour,minute=g.grupo.inicioAgenda.minute)
+				#Fin de la agenda
+				fin = datetime.today()
+				fin = fin.replace(hour=g.grupo.finAgenda.hour,minute=g.grupo.finAgenda.minute)
+				if(inicio <= datetime.now() <= fin):
+					enMedio = True
+			if(enMedio == True):
+				horarios.append(h.key())
+	return horarios
+
+
+def dameNumeroDia(d,i):
+	if(d == "Lunes"):
+		return 1+i
+	if(d == "Martes"):
+		return 2+i
+	if(d == "Miercoles"):
+		return 3+i
+	if(d == "Jueves"):
+		return 4+i
+	if(d == "Viernes"):
+		return 5+i
+	if(d == "Sabado"):
+		if(6+i > 6):
+			return 0
+		else:
+			return 6+i
+	if(d == "Domingo"):
+		if(0+i < 0):
+			return 6
+		else:
+			return 0+i
