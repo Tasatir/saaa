@@ -30,6 +30,7 @@ from google.appengine.ext import db
 # be found in current directory ("__file__")
 # variable env para sesiones
 env = Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+env.filters['format_time'] = format_time
 
 # Método para verificar si hay una sesión activa
 def before_filter(fn):
@@ -221,6 +222,7 @@ class VerClinicas(webapp2.RequestHandler):
 	#@before_filter
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
+		time.sleep(.1)
 		clinicas = getAllClinicas()
 		_despliegaVerClinicas(self, clinicas, '/vistas/Clinica/verClinicas.html')
 
@@ -261,9 +263,8 @@ class VerGrupos(webapp2.RequestHandler):
 	#@before_filter
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
-		grupos = getAllGrupos(self.request.get('key'))
 		clinica = getObject(self.request.get('key'))
-		_despliegaVerGrupos(self,clinica, grupos, '/vistas/Grupo/verGrupos.html')
+		_despliegaVerGrupos(self,clinica, getGrupos(clinica.key()), '/vistas/Grupo/verGrupos.html')
 
 class EditarGrupo(webapp2.RequestHandler):
 	#@before_filter
@@ -274,7 +275,6 @@ class EditarGrupo(webapp2.RequestHandler):
 		_despliegaEditaGrupo(self, clinica, grupo, '/vistas/Grupo/editaGrupo.html')
 
 #=======================================Fin de manejo de Grupos
-#=======================================Inicia Manejo de Horarios
 #=======================================Inicia Manejo de Asignacion de Grupo
 class UsuariosAsignacion(webapp2.RequestHandler):
 	def get(self):
@@ -338,7 +338,7 @@ class VerHorarios(webapp2.RequestHandler):
 		self.response.headers['Content-Type'] = 'text/html'
 		#horarios = getAllHorarios(self.request.get('key'))
 		grupo = getObject(self.request.get('key'))
-		_despliegaVerHorarios(self,grupo, grupo.horarios, '/vistas/Horario/verHorarios.html')
+		_despliegaVerHorarios(self,grupo, getHorarios(grupo), '/vistas/Horario/verHorarios.html')
 
 class EditarHorario(webapp2.RequestHandler):
 	#@before_filter

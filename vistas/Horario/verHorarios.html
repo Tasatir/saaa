@@ -19,8 +19,8 @@
 		<tr>
 			<td>{{h.descripcion}}</td>
 			<td>{{h.dia}}</td>
-			<td>{{h.horaInicio}}</td>
-			<td>{{h.horaFin}}</td>
+			<td>{{h.horaInicio|format_time}}</td>
+			<td>{{h.horaFin|format_time}}</td>
 			<td><a href=/editarHorario?key={{h.key()}}&grupo={{grupo.key()}}>Edita</a></td>
 			<td><a href=/eliminarHorario?key={{h.key()}}&grupo={{grupo.key()}}>Eliminar</a></td>
 		</tr>

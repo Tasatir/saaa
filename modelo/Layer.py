@@ -12,6 +12,7 @@ del Data Store
 """
 Crea una Nueva Clinica
 """
+@db.transactional(xg=True)
 def grabaClinica(nombre,descripcion,localizacion,unidades,defectuosas):
     Clinica(nombre = nombre,
             descripcion= descripcion,
@@ -95,7 +96,7 @@ def grabaGrupo(clinica,nombre,descripcion):
 	clinica = db.get(clinica)
 	if(clinica == None):
 		return
-	Grupo(clinica = clinica, nombre = nombre, descripcion = descripcion).put()
+	Grupo(clinica = clinica,parent=clinica, nombre = nombre, descripcion = descripcion).put()
 
 """
 	Actualiza un grupo ya existente en el Data Store
@@ -115,13 +116,36 @@ def actualizaGrupo(key,nombre,descripcion):
 	Guarda un horario nuevo en la base de datos
 """
 def grabaHorario(key,descripcion,dia,horaInicio,horaFin):
+	i=horaInicio.split(':')
+	f=horaFin.split(':')
 	if(key == None or key == ""):
 		return
 	grupo = db.get(key)
 	if(grupo == None):
 		return
-	Horario(grupo = grupo,descripcion=descripcion,dia=dia,horaInicio=datetime.time(10,10,10,0),horaFin=datetime.time(10,10,10,0)).put()
+	Horario(grupo = grupo, parent=grupo,descripcion=descripcion,dia=dia,horaInicio=datetime.time(int(i[0]),int(i[1]),0,0),horaFin=datetime.time(int(f[0]),int(f[1]),0,0)).put()
 
+def format_time(t):
+	format = "%H:%M"
+	return t.strftime(format)
+"""
+	Metodo para buscar los horarios por ancestro y ver
+	los cambios inmediatos
+"""
+def getHorarios(grupo):
+	query = Horario.all()
+	query.ancestor(grupo)
+	return query
+"""
+	Metodo para buscar las clinicas por ancestro
+	y ver los cambios inmediatos
+"""
+def getGrupos(clinica):
+	query = Grupo.all()
+	query.ancestor(clinica)
+	return query
+
+	
 """
 	Actualiza un horario ya existente en el data store
 """
@@ -173,16 +197,6 @@ def creaAsignacion(usuario,grupo):
 	ciclo = None
 	Usuario_Clinica(usuario = usuario, grupo = grupo, ciclo = ciclo).put()
 	
-
-def setHorario(grupo,horaInicio,horaFin,dia,descripcion):
-    format="%H:%M"
-    #h1=datetime.datetime.strptime(horaInicio+":00","%H:%M:%S")
-    h2=time.strptime(horaInicio, format)
-    Horario(grupo=db.get(clinica),descripcion=descripcion,dia=dia,horaInicio=datetime.time(10,10,10,0),horaFin=datetime.time(10,10,10,0)).put()
-
-def deleteHorario(horario):
-    horario = db.get(horario)
-    db.delete(horario)
 
 def grabaUsuario(matricula,password,nombre,apellidop,apellidom,tipo):
     Usuario(matricula = matricula, password = password, nombre = nombre, apellidop = apellidop, apellidom = apellidom, tipo = tipo).put()
