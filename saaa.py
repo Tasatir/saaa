@@ -618,23 +618,18 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/agregarHorario', AgregarHorario),
                                ('/editarHorario', EditarHorario),
                                 #Fin de manejo de Grupo
-<<<<<<< HEAD
-							   ('/cerrarSesion', CerrarSesion),
-							   ('/guardaCambiosUsuario', GuardaCambiosUsuario),
 							    #Inicio de Agregar periodos
 							   ('/agregarPeriodo', AgregarPeriodo),
 							   ('/grabarPeriodo', GrabarPeriodo),
 							   ('/verPeriodo', VerPeriodo),
 							   ('/editarPeriodo', EditarPeriodo),
 							   ('/eliminarPeriodo', EliminarPeriodo),
-							   ('/grabarCambiosPeriodo', GrabarCambiosPeriodo)], debug=True)
-=======
-				#Inicia manejo de Asignacion
+							   ('/grabarCambiosPeriodo', GrabarCambiosPeriodo),
+								#Finaliza manejo de periodos
+								#Inicia manejo de Asignacion
                                ('/asignaUsuarios1', UsuariosAsignacion),
-	                       ('/asignaUsuarios2', ClinicasAsignacion),
-		               ('/asignaUsuarios3', GruposAsignacion),
-			       ('/guardaAsignacion', GuardaAsignacion),			
-				#Finaliza manejo de Asignacion
-                               ('/cerrarSesion', CerrarSesion),
-				('/guardaCambiosUsuario', GuardaCambiosUsuario)], debug=True)
->>>>>>> c584798834138a98005c55ad6d56e678ef91b624
+							   ('/asignaUsuarios2', ClinicasAsignacion),
+							   ('/asignaUsuarios3', GruposAsignacion),
+							   ('/guardaAsignacion', GuardaAsignacion),								#Finaliza manejo de Asignacion
+							   ('/cerrarSesion', CerrarSesion),
+							   ('/guardaCambiosUsuario', GuardaCambiosUsuario)], debug=True)
