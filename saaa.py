@@ -425,8 +425,6 @@ class VerHorariosUsuario(webapp2.RequestHandler):
 		self.response.headers['Content-Type'] = 'text/html'
 		_despliegaHorariosUsuario(self,horarios, '/vistas/Alumno/verHorarios.html')
 #===================================Finaliza Proceso de agendas
-<<<<<<< HEAD
-=======
 
 #=======================================Inicia Manejo de Periodos
 class AgregarPeriodo(webapp2.RequestHandler):
@@ -498,7 +496,6 @@ class GrabarCambiosPeriodo(webapp2.RequestHandler):
 		
 		updatePeriodo(periodo,descripcion,fi,ff,esActual)
 		self.redirect('/verPeriodo') #Redireccion a la vista de Grupos de una Clinica
->>>>>>> new_branch_name
 
 """
 Views
