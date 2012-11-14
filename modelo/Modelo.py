@@ -14,7 +14,7 @@ class Clinica(db.Model):
     #Numero de unidades defectuosas y su numero de unidad
     defectuosas = db.IntegerProperty(required = True)
 
-#Usuarios, qu epueden ser alumnos, doctores, encargados o administradores
+#Usuarios, que pueden ser alumnos, doctores, encargados o administradores
 class Usuario(db.Model):
     #ID del usuario que es dueno de esta entidad
     #En este caso es la matricula
@@ -39,6 +39,9 @@ class Grupo(db.Model):
     clinica = db.ReferenceProperty(Clinica,collection_name='grupos')
     nombre = db.StringProperty(required = True)
     descripcion = db.StringProperty(required = True)
+    inicioAgenda = db.TimeProperty(required = True)
+    finAgenda = db.TimeProperty(required = True)
+    fa = db.StringProperty(required = True, choices=('Mismo Dia','Siguiente Dia'));
 
 #Horarios de los Grupos
 class Horario(db.Model):
@@ -60,7 +63,5 @@ class Usuario_Clinica(db.Model):
 class Cita(db.Model):
     usuario = db.ReferenceProperty(Usuario,collection_name='citas')
     horario = db.ReferenceProperty(Horario,collection_name='pacientes')
-    descripcion = db.StringProperty(required = True)
+    descripcion = db.StringProperty()
     folio = db.StringProperty(required = True)
-    dia = db.StringProperty(required = True, choices=('Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'))
-    hora = db.TimeProperty(required = True)

@@ -162,6 +162,7 @@ class IniciaSesion(webapp2.RequestHandler):
 				user.append(u.nombre)
 				user.append(u.matricula)
 				user.append(u.tipo)
+				user.append(u.key())
 				env.globals['session'] = user
 				self.redirect('/bienvenida')
 		else:
@@ -248,10 +249,13 @@ class GrabarGrupo(webapp2.RequestHandler):
 		clinica = self.request.get('clinica')
 		nombre = self.request.get('nombre')
 		descripcion = self.request.get('descripcion')
+		inicioAgenda = self.request.get('inicioAgenda')
+		finAgenda = self.request.get('finAgenda')
+		fa = self.request.get('fa')
 		if(key == None or  key == ""):
-			grabaGrupo(clinica,nombre,descripcion)
+			grabaGrupo(clinica,nombre,descripcion,inicioAgenda,finAgenda,fa)
 		else:
-			actualizaGrupo(key,nombre,descripcion)
+			actualizaGrupo(key,nombre,descripcion,inicioAgenda,finAgenda,fa)
 		self.redirect('/verGrupos?key='+clinica) #Redireccion a la vista de Grupos de una Clinica
 
 class EliminarGrupo(webapp2.RequestHandler):
@@ -375,8 +379,52 @@ class GuardaCambiosUsuario(webapp2.RequestHandler):
 		
 		usuario = getUsuario(usuarioKey);
 		updateUsuario(usuario,nombre,matricula,apellidop,apellidom,tipo)
-
 		self.redirect('/verUsuarios')
+#====================================Inicia Proceso de Agendas
+class AgendaPacienteExample(webapp2.RequestHandler):
+	def get(self):
+		horario = self.request.get('horario')
+		disponible = verificaDisponibilidadExample(horario)
+		self.response.headers['Content-Type'] = 'text/html'
+		self.response.out.write('Total:<br/>')
+		self.response.out.write(disponible)
+
+class AgendaPaciente(webapp2.RequestHandler):
+	def post(self):
+		horario = self.request.get('horario')
+		descripcion = self.request.get('descripcion')
+		folio = self.request.get('folio')
+		usuario = env.globals.get('session')[3]
+		disponible = verificaDisponibilidad(horario,usuario,descripcion,folio)
+		self.response.headers['Content-Type'] = 'text/html'
+		if (disponible[1] == True):
+			_despliegaExito(self,"El usuario ha agendado correctamente (No."+str(disponible[0])+")",'/verHorariosUsuario','/vistas/Exito.html')
+		else:
+			_despliegaError(self,"Agenda Llena ("+str(disponible[0])+" Pacientes), no es posible agendar",'/verHorariosUsuario','/vistas/Error.html')
+
+class VerFormaCita(webapp2.RequestHandler):
+	def get(self):
+		horario = self.request.get('horario')
+		self.response.headers['Content-Type'] = 'text/html'
+		_despliegaFormaCita(self,horario,'/vistas/Alumno/agendaForma.html')
+		
+
+class VerGruposUsuario(webapp2.RequestHandler):
+	def get(self):
+		k=env.globals.get('session')
+		key = k[3]
+		usuario = db.get(key)
+		grupos = usuario.grupos
+		self.response.headers['Content-Type'] = 'text/html'
+		_despliegaGruposUsuario(self,usuario,grupos, '/vistas/Alumno/verGrupos.html')
+
+class VerHorariosUsuario(webapp2.RequestHandler):
+	def get(self):
+		usuario = env.globals.get('session')[3]
+		horarios = getAgendaValida(usuario)
+		self.response.headers['Content-Type'] = 'text/html'
+		_despliegaHorariosUsuario(self,horarios, '/vistas/Alumno/verHorarios.html')
+#===================================Finaliza Proceso de agendas
 
 #=======================================Inicia Manejo de Periodos
 class AgregarPeriodo(webapp2.RequestHandler):
@@ -460,6 +508,10 @@ def _despliegaLogin(self, templateFile):
 def _despliegaRegistraCita(self, templateFile):
         template = env.get_template(templateFile)
         self.response.out.write(template.render({}))
+
+def _despliegaFormaCita(self,horario, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'horario':horario}))
 
 def _despliegaVerUsuarios(self, usuarios, templateFile):
 		template = env.get_template(templateFile)
@@ -555,16 +607,30 @@ def _despliegaGruposAsignacion(self,usuario,clinica,templateFile):
 def _despliegaExito(self,mensaje,liga,templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'mensaje':mensaje,'liga':liga}))
+
+def _despliegaError(self,mensaje,liga,templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'mensaje':mensaje,'liga':liga}))
 """
 	Vista para editar Un horario
 """
 def _despliegaEditaHorario(self,grupo, horario, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'grupo':grupo,'horario':horario}))
+"""
+	Vista de los Grupos a los que pertenece un usuario
+"""
+def _despliegaGruposUsuario(self,usuario,grupos, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'grupos':grupos,'usuario':usuario}))
 
 def _despliegaEditaClinica(self, clinica, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinica': clinica }))
+
+def _despliegaHorariosUsuario(self, horarios, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'horarios': horarios }))
 
 """
 	Vistas para manejo de periodos
@@ -628,8 +694,16 @@ app = webapp2.WSGIApplication([('/', MainPage),
 								#Finaliza manejo de periodos
 								#Inicia manejo de Asignacion
                                ('/asignaUsuarios1', UsuariosAsignacion),
-							   ('/asignaUsuarios2', ClinicasAsignacion),
-							   ('/asignaUsuarios3', GruposAsignacion),
-							   ('/guardaAsignacion', GuardaAsignacion),								#Finaliza manejo de Asignacion
-							   ('/cerrarSesion', CerrarSesion),
-							   ('/guardaCambiosUsuario', GuardaCambiosUsuario)], debug=True)
+	                       ('/asignaUsuarios2', ClinicasAsignacion),
+		               ('/asignaUsuarios3', GruposAsignacion),
+			       ('/guardaAsignacion', GuardaAsignacion),	
+				#Finaliza manejo de Asignacion
+				#Inicia Agenda
+			       ('/agendaPaciente',AgendaPaciente),
+			       ('/agendaPacienteExample',AgendaPacienteExample),
+			       ('/verGruposUsuario',VerGruposUsuario),
+			       ('/verHorariosUsuario',VerHorariosUsuario),
+			       ('/verFormaCita',VerFormaCita),
+				#Finaliza Agenda
+                               ('/cerrarSesion', CerrarSesion),
+				('/guardaCambiosUsuario', GuardaCambiosUsuario)], debug=True)

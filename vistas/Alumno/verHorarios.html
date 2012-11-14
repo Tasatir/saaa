@@ -1,0 +1,28 @@
+<html>
+  <head>
+    {% include '/vistas/head.html' %}
+  </head>
+  <body> 
+	{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+	<h3>Tus Grupos</h3>
+      <table border="1" > 
+         <tr>
+				<th width="300">Clinica</th>
+				<th width="300">Grupo</th>
+				<th width="300">Dia</th>
+				<th width="300">Horario</th>
+				<th width="300">.</th>
+         </tr>
+      {% for h in horarios %}  
+		<tr>
+			<td>{{h.parent().parent().nombre}}</td>
+			<td>{{h.parent().nombre}}</td>
+			<td>{{h.dia}}</td>
+			<td>{{h.horaInicio|format_time}}-{{h.horaInicio|format_time}}</a></td>
+			<td><a href="/verFormaCita?horario={{h.key()}}">Agendar</a></td>
+		</tr>
+      {% endfor %}
+      </table>
+  </body>
+</html>

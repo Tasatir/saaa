@@ -1,0 +1,15 @@
+<html>
+	<head>
+		{% include '/vistas/head.html' %}
+	</head>
+	<body>
+		{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+		<form action="/agendaPaciente" method="post">
+		   <input type="hidden" name="horario" value="{{horario}}"/>
+		   <div>Folio: <input type="text" name="folio" /></div>
+		   <div>Descripcion: <input  type="text" name="descripcion" /></div>
+		   <div><input type="submit" value="Guardar Cita"></div>
+		</form>
+	</body>
+</html>
