@@ -1,0 +1,30 @@
+<html>
+	<head>
+		{% include '/vistas/head.html' %}
+	</head>
+	<body>
+		{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+		<form action="/grabarCambiosPeriodo" method="post">
+			<input type="hidden" name="key" value="{{periodo.key()}}"/>
+			<div>Descripción: <input type="text" name="descripcion" value="{{periodo.descripcion}}"/></div>
+			<div>Fecha de inicio: <input id="date1" type="text" name="fechaInicio" value="{{periodo.validFrom.strftime('%m/%d/%Y')}}" /></div>
+			<div>Fecha de termino: <input id="date2" type="text" name="fechaFin" value="{{periodo.validTo.strftime('%m/%d/%Y')}}" /></div>
+			<div>
+				<label class="select">¿Es periodo actual?
+					<select name="actual" value="{{periodo.isActual}}">
+						<option value='1' >Si</option>
+						<option value='0' >No</option>
+					</select>
+				</label>
+			</div>
+			<div><input type="submit" value="Guardar Cambios"></div>
+		</form>
+	</body>
+	<link href="/includes/stylesheet.css" rel="stylesheet" type="text/css"/>
+	<link href="/includes/jquery-ui-1.9.1.custom.min.css" rel="stylesheet" type="text/css"/>
+	<script language="JavaScript" src="/includes/jquery.js"></script>
+	<script language="JavaScript" src="/includes/jquery-ui-1.9.1.custom.min.js"></script>
+	<script language="JavaScript" src="/includes/date-time.js"></script>
+	<script language="JavaScript" src="/includes/agregarPeriodo.js"></script>
+</html>

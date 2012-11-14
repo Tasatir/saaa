@@ -1,0 +1,31 @@
+<html>
+  <head>
+    {% include '/vistas/head.html' %}
+  </head>
+  <body> 
+	{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+	<h3>Periodos</h3>
+      <table border="1" > 
+         <tr>
+				<th width="300">Descripcion</th>
+				<td>Actual</td>
+				<td>Fecha de inicio</td>
+				<td>Fecha de termino</td>
+				<td>.</td>
+				<td>.</td>
+         </tr>
+      {% for p in periodos %}
+		<tr>
+			<td>{{p.descripcion}}</td>
+			<td>{{p.isActual}}</td>
+			<td>{{p.validFrom}}</td>
+			<td>{{p.validTo}}</td>
+			<td><a href=/editarPeriodo?key={{p.key()}}>Edita</a></td>
+			<td><a href=/eliminarPeriodo?key={{p.key()}}>Eliminar</a></td>
+		</tr>
+      {% endfor %}
+      </table>
+      <p><a href="/agregarPeriodo">Agregar Periodo</a></p>
+  </body>
+</html>

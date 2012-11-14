@@ -136,6 +136,7 @@ class GrabaUsuario(webapp2.RequestHandler):
 		password = md5
 		
 		grabaUsuario(matricula,password,nombre,apellidop,apellidom,tipo)
+		self.redirect('/verUsuarios')
 
 class IniciaSesion(webapp2.RequestHandler):
 	""" Entrada: al dar click en iniciar sesión en la pantalla principal
@@ -346,6 +347,77 @@ class GuardaCambiosUsuario(webapp2.RequestHandler):
 
 		self.redirect('/verUsuarios')
 
+#=======================================Inicia Manejo de Periodos
+class AgregarPeriodo(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		_despliegaAgregarPeriodo(self, '/vistas/Periodo/agregarPeriodo.html')
+
+class GrabarPeriodo(webapp2.RequestHandler):
+	def post(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		descripcion = self.request.get('descripcion')
+		fechaInicio = self.request.get('fechaInicio')
+		fechaFin = self.request.get('fechaFin')
+		actual = self.request.get('actual')
+		
+		if actual == '1':
+			esActual = True
+			quitaActual()
+		else:
+			esActual = False
+				
+		fi = to_datetime(fechaInicio)
+		ff = to_datetime(fechaFin)
+
+		grabaPeriodo(descripcion,fi,ff,esActual)
+		self.redirect('/verPeriodo') #Redireccion a la vista de Grupos de una Clinica
+
+class EliminarPeriodo(webapp2.RequestHandler):
+	def get(self):
+		key = self.request.get('key')
+		deletePeriodo(key)
+		self.redirect('/verPeriodo') #Redireccion a la vista de Horarios
+
+class VerPeriodo(webapp2.RequestHandler):
+	#@before_filter
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		#horarios = getAllHorarios(self.request.get('key'))
+		periodos = getAllPeriodos()
+		_despliegaVerPeriodo(self,periodos, '/vistas/Periodo/verPeriodo.html')
+		
+class EditarPeriodo(webapp2.RequestHandler):
+	#@before_filter
+	def get(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		periodoKey = self.request.get('key')
+		periodo = getPeriodo(periodoKey)
+		_despliegaEditaPeriodo(self, periodo, '/vistas/Periodo/editaPeriodo.html')
+
+class GrabarCambiosPeriodo(webapp2.RequestHandler):
+	def post(self):
+		self.response.headers['Content-Type'] = 'text/html'
+		descripcion = self.request.get('descripcion')
+		fechaInicio = self.request.get('fechaInicio')
+		fechaFin = self.request.get('fechaFin')
+		actual = self.request.get('actual')
+		
+		if actual == '1':
+			esActual = True
+			quitaActual()
+		else:
+			esActual = False
+				
+		fi = to_datetime(fechaInicio)
+		ff = to_datetime(fechaFin)
+		
+		periodoKey = self.request.get('key')
+		periodo = getPeriodo(periodoKey)
+		
+		updatePeriodo(periodo,descripcion,fi,ff,esActual)
+		self.redirect('/verPeriodo') #Redireccion a la vista de Grupos de una Clinica
+
 """
 Views
 """
@@ -436,6 +508,21 @@ def _despliegaEditaClinica(self, clinica, templateFile):
 		template = env.get_template(templateFile)
 		self.response.out.write(template.render({'clinica': clinica }))
 
+"""
+	Vistas para manejo de periodos
+"""
+def _despliegaAgregarPeriodo(self, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({}))
+		
+def _despliegaVerPeriodo(self,periodos, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'periodos':periodos}))
+
+def _despliegaEditaPeriodo(self, periodo, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'periodo':periodo}))
+
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/iniciaSesion', IniciaSesion),
                                ('/bienvenida', Bienvenida),
@@ -473,5 +560,12 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/agregarHorario', AgregarHorario),
                                ('/editarHorario', EditarHorario),
                                 #Fin de manejo de Grupo
-                               ('/cerrarSesion', CerrarSesion),
-				('/guardaCambiosUsuario', GuardaCambiosUsuario)], debug=True)
+							   ('/cerrarSesion', CerrarSesion),
+							   ('/guardaCambiosUsuario', GuardaCambiosUsuario),
+							    #Inicio de Agregar periodos
+							   ('/agregarPeriodo', AgregarPeriodo),
+							   ('/grabarPeriodo', GrabarPeriodo),
+							   ('/verPeriodo', VerPeriodo),
+							   ('/editarPeriodo', EditarPeriodo),
+							   ('/eliminarPeriodo', EliminarPeriodo),
+							   ('/grabarCambiosPeriodo', GrabarCambiosPeriodo)], debug=True)
