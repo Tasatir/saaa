@@ -30,6 +30,7 @@ from google.appengine.ext import db
 # be found in current directory ("__file__")
 # variable env para sesiones
 env = Environment(loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+env.filters['format_time'] = format_time
 
 # Método para verificar si hay una sesión activa
 def before_filter(fn):
@@ -222,6 +223,7 @@ class VerClinicas(webapp2.RequestHandler):
 	#@before_filter
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
+		time.sleep(.1)
 		clinicas = getAllClinicas()
 		_despliegaVerClinicas(self, clinicas, '/vistas/Clinica/verClinicas.html')
 
@@ -262,9 +264,8 @@ class VerGrupos(webapp2.RequestHandler):
 	#@before_filter
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
-		grupos = getAllGrupos(self.request.get('key'))
 		clinica = getObject(self.request.get('key'))
-		_despliegaVerGrupos(self,clinica, grupos, '/vistas/Grupo/verGrupos.html')
+		_despliegaVerGrupos(self,clinica, getGrupos(clinica.key()), '/vistas/Grupo/verGrupos.html')
 
 class EditarGrupo(webapp2.RequestHandler):
 	#@before_filter
@@ -275,7 +276,37 @@ class EditarGrupo(webapp2.RequestHandler):
 		_despliegaEditaGrupo(self, clinica, grupo, '/vistas/Grupo/editaGrupo.html')
 
 #=======================================Fin de manejo de Grupos
-#=======================================Inicia Manejo de Horarios
+#=======================================Inicia Manejo de Asignacion de Grupo
+class UsuariosAsignacion(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type']= 'text/html'
+		usuarios = getAllUsuarios()
+		_despliegaUsuariosAsignacion(self,usuarios,'/vistas/Asignacion/verUsuarios.html')
+
+class ClinicasAsignacion(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type']= 'text/html'
+		clinicas = getAllClinicas()
+		usuario = getObject(self.request.get('usuario'))
+		_despliegaClinicasAsignacion(self,usuario,clinicas,'/vistas/Asignacion/verClinicas.html')
+
+class GruposAsignacion(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type']= 'text/html'
+		clinica = getObject(self.request.get('clinica'))
+		usuario = getObject(self.request.get('usuario'))
+		_despliegaGruposAsignacion(self,usuario,clinica,'/vistas/Asignacion/verGrupos.html')
+
+class GuardaAsignacion(webapp2.RequestHandler):
+	def get(self):
+		self.response.headers['Content-Type']= 'text/html'
+		grupo = self.request.get('grupo')
+		usuario = self.request.get('usuario')
+		#Crea la asignacion entre ambos objetos
+		creaAsignacion(usuario,grupo)
+		_despliegaExito(self,"Usuario Asignado Correctamente",'/asignaUsuarios1','/vistas/Exito.html')
+#=======================================Fin de Manejo de Asignacion de Grupo
+
 class AgregarHorario(webapp2.RequestHandler):
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
@@ -308,7 +339,7 @@ class VerHorarios(webapp2.RequestHandler):
 		self.response.headers['Content-Type'] = 'text/html'
 		#horarios = getAllHorarios(self.request.get('key'))
 		grupo = getObject(self.request.get('key'))
-		_despliegaVerHorarios(self,grupo, grupo.horarios, '/vistas/Horario/verHorarios.html')
+		_despliegaVerHorarios(self,grupo, getHorarios(grupo), '/vistas/Horario/verHorarios.html')
 
 class EditarHorario(webapp2.RequestHandler):
 	#@before_filter
@@ -498,6 +529,33 @@ def _despliegaEditaGrupo(self,clinica,grupo, templateFile):
 
 
 """
+	Vista para ver usuarios del sistema
+"""
+def _despliegaUsuariosAsignacion(self,usuarios, templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'usuarios':usuarios}))
+
+"""
+	Vista para ver clinicas para asignar
+"""
+def _despliegaClinicasAsignacion(self,usuario,clinicas,templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'usuario':usuario,'clinicas':clinicas}))
+
+"""
+	Vista para ver grupos a asignar
+"""
+def _despliegaGruposAsignacion(self,usuario,clinica,templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'usuario':usuario,'clinica':clinica}))
+
+"""
+	Despliega un mensaje de Exito y la liga de retorno
+"""
+def _despliegaExito(self,mensaje,liga,templateFile):
+		template = env.get_template(templateFile)
+		self.response.out.write(template.render({'mensaje':mensaje,'liga':liga}))
+"""
 	Vista para editar Un horario
 """
 def _despliegaEditaHorario(self,grupo, horario, templateFile):
@@ -560,6 +618,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/agregarHorario', AgregarHorario),
                                ('/editarHorario', EditarHorario),
                                 #Fin de manejo de Grupo
+<<<<<<< HEAD
 							   ('/cerrarSesion', CerrarSesion),
 							   ('/guardaCambiosUsuario', GuardaCambiosUsuario),
 							    #Inicio de Agregar periodos
@@ -569,3 +628,13 @@ app = webapp2.WSGIApplication([('/', MainPage),
 							   ('/editarPeriodo', EditarPeriodo),
 							   ('/eliminarPeriodo', EliminarPeriodo),
 							   ('/grabarCambiosPeriodo', GrabarCambiosPeriodo)], debug=True)
+=======
+				#Inicia manejo de Asignacion
+                               ('/asignaUsuarios1', UsuariosAsignacion),
+	                       ('/asignaUsuarios2', ClinicasAsignacion),
+		               ('/asignaUsuarios3', GruposAsignacion),
+			       ('/guardaAsignacion', GuardaAsignacion),			
+				#Finaliza manejo de Asignacion
+                               ('/cerrarSesion', CerrarSesion),
+				('/guardaCambiosUsuario', GuardaCambiosUsuario)], debug=True)
+>>>>>>> c584798834138a98005c55ad6d56e678ef91b624

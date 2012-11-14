@@ -53,9 +53,8 @@ class Usuario_Clinica(db.Model):
     usuario = db.ReferenceProperty(Usuario,required=True,collection_name='grupos')
     grupo = db.ReferenceProperty(Grupo,required=True,collection_name='usuarios')
     #El ciclo escolar del usuario
-    ciclo = db.ReferenceProperty(Ciclo,required=True)
-    #El usuario es aceptado en la clinica para este ciclo
-    isAccepted = db.BooleanProperty(required = True,default = 0)
+#    ciclo = db.ReferenceProperty(Ciclo,required=True)
+    ciclo = db.ReferenceProperty(Ciclo)
 
 #Horarios de los Grupos
 class Cita(db.Model):

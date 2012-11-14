@@ -1,0 +1,26 @@
+<html>
+  <head>
+    {% include '/vistas/head.html' %}
+  </head>
+  <body> 
+	{% include '/vistas/header.html' %}
+		{% include '/vistas/menu.html' %}
+	<h3>Asignar Usuario</h3>
+      <table border="1" > 
+         <tr>
+				<th width="300">Matricula</th>
+				<td>Nombre</td>
+				<td>Tipo</td>
+				<td>Asignar Grupo</td>
+         </tr>
+      {% for u in usuarios %}
+		<tr>
+			<td>{{u.matricula}}</td>
+			<td>{{u.nombre}} {{u.apellidop}} {{u.apellidom}}</td>
+			<td>{{u.tipo}}</td>
+			<td><a href=/asignaUsuarios2?usuario={{u.key()}}>Asignar</a></td>
+		</tr>
+      {% endfor %}
+      </table>
+  </body>
+</html>
