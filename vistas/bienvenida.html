@@ -6,7 +6,9 @@
   <body>
 		{% include '/vistas/header.html' %}
 		{% include '/vistas/menu.html' %}
-		<h1>Bienvenido {{ session[0]}}</h1> 
+		{%- if session -%}
+			<h2>Bienvenido {{ session[0] }}</h2> 
+		{% endif %}
 		
   </body>
 </html>

@@ -285,12 +285,12 @@ def getHorariosValidos(usuario):
 					enMedio = True
 			if(((datetime.date.today()).weekday() == dameNumeroDia(h.dia,0)) and g.grupo.fa != "Mismo Dia"):
 				#Inicio de la agenda
-				inicio = datetime.today() - datetime.timedelta(days=1)
+				inicio = datetime.datetime.today() - datetime.timedelta(days=1)
 				inicio = inicio.replace(hour=g.grupo.inicioAgenda.hour,minute=g.grupo.inicioAgenda.minute)
 				#Fin de la agenda
-				fin = datetime.today()
+				fin = datetime.datetime.today()
 				fin = fin.replace(hour=g.grupo.finAgenda.hour,minute=g.grupo.finAgenda.minute)
-				if(inicio <= datetime.now() <= fin):
+				if(inicio <= datetime.datetime.now() <= fin):
 					enMedio = True
 			if(enMedio == True):
 				horarios.append(h.key())
